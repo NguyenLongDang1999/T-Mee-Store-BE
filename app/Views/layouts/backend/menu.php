@@ -119,19 +119,19 @@
 
             <ul class="menu-sub">
                 <li class="menu-item <?= getMenuActive(route_to('admin.brand.index')) ?>">
-                    <a href="<?= route_to('admin.category.index') ?>" class="menu-link">
+                    <a href="<?= route_to('admin.brand.index') ?>" class="menu-link">
                         <div class="text-capitalize">Danh sách</div>
                     </a>
                 </li>
 
                 <li class="menu-item <?= getMenuActive(route_to('admin.brand.create')) ?>">
-                    <a href="<?= route_to('admin.category.create') ?>" class="menu-link">
+                    <a href="<?= route_to('admin.brand.create') ?>" class="menu-link">
                         <div class="text-capitalize">Thêm mới</div>
                     </a>
                 </li>
 
                 <li class="menu-item <?= getMenuActive(route_to('admin.brand.recycle')) ?>">
-                    <a href="<?= route_to('admin.category.recycle') ?>" class="menu-link">
+                    <a href="<?= route_to('admin.brand.recycle') ?>" class="menu-link">
                         <div class="text-capitalize">Thùng rác</div>
                     </a>
                 </li>

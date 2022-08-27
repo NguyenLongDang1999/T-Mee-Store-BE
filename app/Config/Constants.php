@@ -110,6 +110,7 @@ defined('FEATURED_INACTIVE') || define('FEATURED_INACTIVE', 0);
  */
 defined('PATH_IMAGE_DEFAULT') || define('PATH_IMAGE_DEFAULT', 'assets/img/default.webp');
 defined('PATH_CATEGORY_IMAGE') || define('PATH_CATEGORY_IMAGE', 'uploads/category/');
+defined('PATH_BRAND_IMAGE') || define('PATH_BRAND_IMAGE', 'uploads/brand/');
 
 /**
  * Message

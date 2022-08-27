@@ -3,7 +3,6 @@
 namespace App\Entities;
 
 use CodeIgniter\Entity\Entity;
-use Exception;
 
 class CategoryEntity extends Entity
 {

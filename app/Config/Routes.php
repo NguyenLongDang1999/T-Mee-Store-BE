@@ -78,7 +78,7 @@ $routes->group('cms-admin', static function ($routes) {
         // Create Page
         $routes->get('create', [BrandController::class, 'create'], ['as' => 'admin.brand.create']);
         $routes->post('store', [BrandController::class, 'store'], ['as' => 'admin.brand.store']);
-        $routes->post('category-exist', [BrandController::class, 'categoryExistSlug'], ['as' => 'admin.brand.categoryExistSlug']);
+        $routes->post('brand-exist', [BrandController::class, 'brandExistSlug'], ['as' => 'admin.brand.brandExistSlug']);
 
         // Edit Page
         $routes->get('(:num)/edit', [BrandController::class, 'edit'], ['as' => 'admin.brand.edit']);
