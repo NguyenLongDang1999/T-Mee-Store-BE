@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Controllers\Backend\BrandController;
 use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\CategoryController;
 
@@ -64,6 +65,28 @@ $routes->group('cms-admin', static function ($routes) {
         // Recycle Page
         $routes->get('recycle', [CategoryController::class, 'recycle'], ['as' => 'admin.category.recycle']);
         $routes->get('get-list-recycle', [CategoryController::class, 'getListRecycle'], ['as' => 'admin.category.getListRecycle']);
+    });
+
+    // Brand
+    $routes->group('brand', static function ($routes) {
+        // Index Page
+        $routes->get('/', [BrandController::class, 'index'], ['as' => 'admin.brand.index']);
+        $routes->get('get-list', [BrandController::class, 'getList'], ['as' => 'admin.brand.getList']);
+        $routes->post('multi-status', [BrandController::class, 'multiStatus'], ['as' => 'admin.brand.multiStatus']);
+        $routes->post('multi-delete', [BrandController::class, 'multiDelete'], ['as' => 'admin.brand.multiDelete']);
+
+        // Create Page
+        $routes->get('create', [BrandController::class, 'create'], ['as' => 'admin.brand.create']);
+        $routes->post('store', [BrandController::class, 'store'], ['as' => 'admin.brand.store']);
+        $routes->post('category-exist', [BrandController::class, 'categoryExistSlug'], ['as' => 'admin.brand.categoryExistSlug']);
+
+        // Edit Page
+        $routes->get('(:num)/edit', [BrandController::class, 'edit'], ['as' => 'admin.brand.edit']);
+        $routes->post('(:num)/update', [BrandController::class, 'update'], ['as' => 'admin.brand.update']);
+
+        // Recycle Page
+        $routes->get('recycle', [BrandController::class, 'recycle'], ['as' => 'admin.brand.recycle']);
+        $routes->get('get-list-recycle', [BrandController::class, 'getListRecycle'], ['as' => 'admin.brand.getListRecycle']);
     });
 });
 

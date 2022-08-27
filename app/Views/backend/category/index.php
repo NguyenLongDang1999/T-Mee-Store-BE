@@ -140,22 +140,20 @@ Categories List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
                         const $status_number = full['status'];
                         const $status = {
                             <?= STATUS_ACTIVE ?>: {
-                                title: 'Hiển thị',
+                                icon: '<i class="bx bx-check bx-xs"></i>',
                                 class: 'bg-label-primary'
                             },
                             <?= STATUS_INACTIVE ?>: {
-                                title: 'Không hiển thị',
-                                class: ' bg-label-secondary'
+                                icon: '<i class="bx bx-x bx-xs"></i>',
+                                class: ' bg-label-danger'
                             },
                         };
                         if (typeof $status[$status_number] === 'undefined') {
                             return data;
                         }
                         return (
-                            '<span class="badge rounded-pill text-capitalize ' +
-                            $status[$status_number].class +
-                            '">' +
-                            $status[$status_number].title +
+                            '<span class="badge badge-center rounded-pill ' + $status[$status_number].class + ' w-px-30 h-px-30">' +
+                            $status[$status_number].icon +
                             '</span>'
                         );
                     }
@@ -166,22 +164,20 @@ Categories List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
                         const $featured_number = full['featured'];
                         const $featured = {
                             <?= FEATURED_ACTIVE ?>: {
-                                title: 'Nổi bật',
+                                icon: '<i class="bx bx-check bx-xs"></i>',
                                 class: 'bg-label-primary'
                             },
                             <?= FEATURED_INACTIVE ?>: {
-                                title: 'Không nổi bật',
-                                class: ' bg-label-secondary'
+                                icon: '<i class="bx bx-x bx-xs"></i>',
+                                class: ' bg-label-danger'
                             },
                         };
                         if (typeof $featured[$featured_number] === 'undefined') {
                             return data;
                         }
                         return (
-                            '<span class="badge rounded-pill text-capitalize ' +
-                            $featured[$featured_number].class +
-                            '">' +
-                            $featured[$featured_number].title +
+                            '<span class="badge badge-center rounded-pill ' + $featured[$featured_number].class + ' w-px-30 h-px-30">' +
+                            $featured[$featured_number].icon +
                             '</span>'
                         );
                     }

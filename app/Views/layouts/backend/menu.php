@@ -82,6 +82,7 @@
             <span class="menu-header-text">Quản lý sản phẩm</span>
         </li>
 
+        <!-- -- Category Manager -->
         <li class="menu-item <?= getMenuActive(route_to('admin.category.index'), '*') ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-category"></i>
@@ -102,6 +103,34 @@
                 </li>
 
                 <li class="menu-item <?= getMenuActive(route_to('admin.category.recycle')) ?>">
+                    <a href="<?= route_to('admin.category.recycle') ?>" class="menu-link">
+                        <div class="text-capitalize">Thùng rác</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- -- Brand Manager -->
+        <li class="menu-item <?= getMenuActive(route_to('admin.brand.index'), '*') ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-store"></i>
+                <div class="text-capitalize">Thương hiệu</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item <?= getMenuActive(route_to('admin.brand.index')) ?>">
+                    <a href="<?= route_to('admin.category.index') ?>" class="menu-link">
+                        <div class="text-capitalize">Danh sách</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.brand.create')) ?>">
+                    <a href="<?= route_to('admin.category.create') ?>" class="menu-link">
+                        <div class="text-capitalize">Thêm mới</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.brand.recycle')) ?>">
                     <a href="<?= route_to('admin.category.recycle') ?>" class="menu-link">
                         <div class="text-capitalize">Thùng rác</div>
                     </a>
