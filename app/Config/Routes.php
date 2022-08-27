@@ -2,6 +2,9 @@
 
 namespace Config;
 
+use App\Controllers\Backend\DashboardController;
+use App\Controllers\Backend\CategoryController;
+
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
 
@@ -37,9 +40,31 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 
 // Backend
-
 $routes->group('cms-admin', static function ($routes) {
-    $routes->get('/', 'Backend\DashboardController::index', ['as' => 'admin.dashboard.index']);
+    // Dashboard
+    $routes->get('/', [DashboardController::class, 'index'], ['as' => 'admin.dashboard.index']);
+
+    // Category
+    $routes->group('category', static function ($routes) {
+        // Index Page
+        $routes->get('/', [CategoryController::class, 'index'], ['as' => 'admin.category.index']);
+        $routes->get('get-list', [CategoryController::class, 'getList'], ['as' => 'admin.category.getList']);
+        $routes->post('multi-status', [CategoryController::class, 'multiStatus'], ['as' => 'admin.category.multiStatus']);
+        $routes->post('multi-delete', [CategoryController::class, 'multiDelete'], ['as' => 'admin.category.multiDelete']);
+
+        // Create Page
+        $routes->get('create', [CategoryController::class, 'create'], ['as' => 'admin.category.create']);
+        $routes->post('store', [CategoryController::class, 'store'], ['as' => 'admin.category.store']);
+        $routes->post('category-exist', [CategoryController::class, 'categoryExistSlug'], ['as' => 'admin.category.categoryExistSlug']);
+
+        // Edit Page
+        $routes->get('(:num)/edit', [CategoryController::class, 'edit'], ['as' => 'admin.category.edit']);
+        $routes->post('(:num)/update', [CategoryController::class, 'update'], ['as' => 'admin.category.update']);
+
+        // Recycle Page
+        $routes->get('recycle', [CategoryController::class, 'recycle'], ['as' => 'admin.category.recycle']);
+        $routes->get('get-list-recycle', [CategoryController::class, 'getListRecycle'], ['as' => 'admin.category.getListRecycle']);
+    });
 });
 
 /*

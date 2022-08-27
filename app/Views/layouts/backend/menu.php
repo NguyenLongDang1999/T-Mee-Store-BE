@@ -70,7 +70,7 @@
             <span class="menu-header-text">Thống kê</span>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item <?= getMenuActive(route_to('admin.dashboard.index')) ?>">
             <a href="<?= route_to('admin.dashboard.index') ?>" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-dashboard"></i>
                 <div class="text-capitalize">Thống kê</div>
@@ -82,23 +82,27 @@
             <span class="menu-header-text">Quản lý sản phẩm</span>
         </li>
 
-        <li class="menu-item">
+        <li class="menu-item <?= getMenuActive(route_to('admin.category.index'), '*') ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-category"></i>
                 <div class="text-capitalize">Danh mục sản phẩm</div>
             </a>
 
             <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="" class="menu-link">
+                <li class="menu-item <?= getMenuActive(route_to('admin.category.index')) ?>">
+                    <a href="<?= route_to('admin.category.index') ?>" class="menu-link">
                         <div class="text-capitalize">Danh sách</div>
                     </a>
+                </li>
 
-                    <a href="" class="menu-link">
+                <li class="menu-item <?= getMenuActive(route_to('admin.category.create')) ?>">
+                    <a href="<?= route_to('admin.category.create') ?>" class="menu-link">
                         <div class="text-capitalize">Thêm mới</div>
                     </a>
+                </li>
 
-                    <a href="" class="menu-link">
+                <li class="menu-item <?= getMenuActive(route_to('admin.category.recycle')) ?>">
+                    <a href="<?= route_to('admin.category.recycle') ?>" class="menu-link">
                         <div class="text-capitalize">Thùng rác</div>
                     </a>
                 </li>

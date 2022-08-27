@@ -35,11 +35,11 @@ defined('COMPOSER_PATH') || define('COMPOSER_PATH', ROOTPATH . 'vendor/autoload.
  */
 defined('SECOND') || define('SECOND', 1);
 defined('MINUTE') || define('MINUTE', 60);
-defined('HOUR')   || define('HOUR', 3600);
-defined('DAY')    || define('DAY', 86400);
-defined('WEEK')   || define('WEEK', 604800);
-defined('MONTH')  || define('MONTH', 2_592_000);
-defined('YEAR')   || define('YEAR', 31_536_000);
+defined('HOUR') || define('HOUR', 3600);
+defined('DAY') || define('DAY', 86400);
+defined('WEEK') || define('WEEK', 604800);
+defined('MONTH') || define('MONTH', 2_592_000);
+defined('YEAR') || define('YEAR', 31_536_000);
 defined('DECADE') || define('DECADE', 315_360_000);
 
 /*
@@ -67,16 +67,16 @@ defined('DECADE') || define('DECADE', 315_360_000);
  |       http://tldp.org/LDP/abs/html/exitcodes.html
  |
  */
-defined('EXIT_SUCCESS')        || define('EXIT_SUCCESS', 0);        // no errors
-defined('EXIT_ERROR')          || define('EXIT_ERROR', 1);          // generic error
-defined('EXIT_CONFIG')         || define('EXIT_CONFIG', 3);         // configuration error
-defined('EXIT_UNKNOWN_FILE')   || define('EXIT_UNKNOWN_FILE', 4);   // file not found
-defined('EXIT_UNKNOWN_CLASS')  || define('EXIT_UNKNOWN_CLASS', 5);  // unknown class
+defined('EXIT_SUCCESS') || define('EXIT_SUCCESS', 0);        // no errors
+defined('EXIT_ERROR') || define('EXIT_ERROR', 1);          // generic error
+defined('EXIT_CONFIG') || define('EXIT_CONFIG', 3);         // configuration error
+defined('EXIT_UNKNOWN_FILE') || define('EXIT_UNKNOWN_FILE', 4);   // file not found
+defined('EXIT_UNKNOWN_CLASS') || define('EXIT_UNKNOWN_CLASS', 5);  // unknown class
 defined('EXIT_UNKNOWN_METHOD') || define('EXIT_UNKNOWN_METHOD', 6); // unknown class member
-defined('EXIT_USER_INPUT')     || define('EXIT_USER_INPUT', 7);     // invalid user input
-defined('EXIT_DATABASE')       || define('EXIT_DATABASE', 8);       // database error
-defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9);      // lowest automatically-assigned error code
-defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125);    // highest automatically-assigned error code
+defined('EXIT_USER_INPUT') || define('EXIT_USER_INPUT', 7);     // invalid user input
+defined('EXIT_DATABASE') || define('EXIT_DATABASE', 8);       // database error
+defined('EXIT__AUTO_MIN') || define('EXIT__AUTO_MIN', 9);      // lowest automatically-assigned error code
+defined('EXIT__AUTO_MAX') || define('EXIT__AUTO_MAX', 125);    // highest automatically-assigned error code
 
 /**
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_LOW instead.
@@ -92,3 +92,31 @@ define('EVENT_PRIORITY_NORMAL', 100);
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_HIGH instead.
  */
 define('EVENT_PRIORITY_HIGH', 10);
+
+/**
+ * Status
+ */
+defined('STATUS_ACTIVE') || define('STATUS_ACTIVE', 1);
+defined('STATUS_INACTIVE') || define('STATUS_INACTIVE', 0);
+
+/**
+ * Featured
+ */
+defined('FEATURED_ACTIVE') || define('FEATURED_ACTIVE', 1);
+defined('FEATURED_INACTIVE') || define('FEATURED_INACTIVE', 0);
+
+/**
+ * Path URL Image
+ */
+defined('PATH_IMAGE_DEFAULT') || define('PATH_IMAGE_DEFAULT', 'assets/img/default.webp');
+defined('PATH_CATEGORY_IMAGE') || define('PATH_CATEGORY_IMAGE', 'uploads/category/');
+
+/**
+ * Message
+ */
+defined('MESSAGE_ERROR') || define('MESSAGE_ERROR', 'Có lỗi xảy ra trong quá trình thao tác. Vui lòng kiểm tra lại.');
+
+/**
+ * DateTime
+ */
+defined('FORMAT_DATE') || define('FORMAT_DATE', 'd-m-Y');
