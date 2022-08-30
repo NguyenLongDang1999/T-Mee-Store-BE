@@ -41,7 +41,10 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 
 // Backend
-$routes->group('cms-admin', static function ($routes) {
+$routes->group(PATH_CMS_ADMIN, static function ($routes) {
+    // CI4 Shield Package
+    service('auth')->routes($routes);
+
     // Dashboard
     $routes->get('/', [DashboardController::class, 'index'], ['as' => 'admin.dashboard.index']);
 

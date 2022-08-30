@@ -8,6 +8,10 @@ use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\Honeypot;
 use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\SecureHeaders;
+use CodeIgniter\Shield\Filters\AuthRates;
+use CodeIgniter\Shield\Filters\ChainAuth;
+use CodeIgniter\Shield\Filters\SessionAuth;
+use CodeIgniter\Shield\Filters\TokenAuth;
 
 class Filters extends BaseConfig
 {
@@ -18,11 +22,15 @@ class Filters extends BaseConfig
      * @var array
      */
     public $aliases = [
-        'csrf'          => CSRF::class,
-        'toolbar'       => DebugToolbar::class,
-        'honeypot'      => Honeypot::class,
-        'invalidchars'  => InvalidChars::class,
+        'csrf' => CSRF::class,
+        'toolbar' => DebugToolbar::class,
+        'honeypot' => Honeypot::class,
+        'invalidchars' => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'session' => SessionAuth::class,
+        'tokens' => TokenAuth::class,
+        'chain' => ChainAuth::class,
+        'auth-rates' => AuthRates::class,
     ];
 
     /**
@@ -33,14 +41,19 @@ class Filters extends BaseConfig
      */
     public $globals = [
         'before' => [
-             'honeypot',
-             'csrf',
-            // 'invalidchars',
+            'honeypot',
+            'csrf',
+            'invalidchars',
+            'session' => [
+                'except' => [
+                    PATH_CMS_ADMIN . '/login'
+                ]
+            ]
         ],
         'after' => [
             'toolbar',
-             'honeypot',
-            // 'secureheaders',
+            'honeypot',
+            'secureheaders',
         ],
     ];
 
@@ -68,5 +81,11 @@ class Filters extends BaseConfig
      *
      * @var array
      */
-    public $filters = [];
+    public $filters = [
+        'auth-rates' => [
+            'before' => [
+                'login*', 'register', 'auth/*'
+            ]
+        ]
+    ];
 }

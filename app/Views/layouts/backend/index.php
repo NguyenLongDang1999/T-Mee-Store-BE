@@ -73,7 +73,7 @@
             <div class="drag-target"></div>
         </div>
         <!-- / Layout wrapper -->
-        <?= $this->include('layouts/backend/linkJS') ?>
 
+        <?= $this->include('layouts/backend/linkJS') ?>
     </body>
 </html>

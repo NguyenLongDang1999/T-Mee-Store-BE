@@ -113,6 +113,11 @@ defined('PATH_CATEGORY_IMAGE') || define('PATH_CATEGORY_IMAGE', 'uploads/categor
 defined('PATH_BRAND_IMAGE') || define('PATH_BRAND_IMAGE', 'uploads/brand/');
 
 /**
+ * Path CMS
+ */
+defined('PATH_CMS_ADMIN') || define('PATH_CMS_ADMIN', 'cms-admin');
+
+/**
  * Message
  */
 defined('MESSAGE_ERROR') || define('MESSAGE_ERROR', 'Có lỗi xảy ra trong quá trình thao tác. Vui lòng kiểm tra lại.');
