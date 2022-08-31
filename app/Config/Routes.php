@@ -5,6 +5,7 @@ namespace Config;
 use App\Controllers\Backend\BrandController;
 use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\CategoryController;
+use App\Controllers\Backend\SliderController;
 
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
@@ -90,6 +91,28 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Recycle Page
         $routes->get('recycle', [BrandController::class, 'recycle'], ['as' => 'admin.brand.recycle']);
         $routes->get('get-list-recycle', [BrandController::class, 'getListRecycle'], ['as' => 'admin.brand.getListRecycle']);
+    });
+
+    // Slider
+    $routes->group('slider', static function ($routes) {
+        // Index Page
+        $routes->get('/', [SliderController::class, 'index'], ['as' => 'admin.slider.index']);
+        $routes->get('get-list', [SliderController::class, 'getList'], ['as' => 'admin.slider.getList']);
+        $routes->post('multi-status', [SliderController::class, 'multiStatus'], ['as' => 'admin.slider.multiStatus']);
+        $routes->post('multi-delete', [SliderController::class, 'multiDelete'], ['as' => 'admin.slider.multiDelete']);
+
+        // Create Page
+        $routes->get('create', [SliderController::class, 'create'], ['as' => 'admin.slider.create']);
+        $routes->post('store', [SliderController::class, 'store'], ['as' => 'admin.slider.store']);
+        $routes->post('brand-exist', [SliderController::class, 'brandExistSlug'], ['as' => 'admin.slider.brandExistSlug']);
+
+        // Edit Page
+        $routes->get('(:num)/edit', [SliderController::class, 'edit'], ['as' => 'admin.slider.edit']);
+        $routes->post('(:num)/update', [SliderController::class, 'update'], ['as' => 'admin.slider.update']);
+
+        // Recycle Page
+        $routes->get('recycle', [SliderController::class, 'recycle'], ['as' => 'admin.slider.recycle']);
+        $routes->get('get-list-recycle', [SliderController::class, 'getListRecycle'], ['as' => 'admin.slider.getListRecycle']);
     });
 });
 

@@ -35,9 +35,9 @@
                             <h4 class="mb-2 text-uppercase text-center">Đăng nhập</h4>
                             <p class="mb-4 text-center">Vui lòng đăng nhập để vào trang quản trị CMS</p>
 
-                            <?= $this->include('layouts/component/_message') ?>
+                            <?= $this->include('components/_message') ?>
 
-                            <?= form_open(route_to('admin.login'), ['id' => 'login-form']) ?>
+                            <?= form_open('', ['id' => 'login-form']) ?>
 
                             <div class="mb-3">
                                 <?= form_label('E-mail', 'email', ['class' => 'form-label']) ?>
@@ -47,7 +47,6 @@
                                     [
                                         'class' => 'form-control',
                                         'id' => 'email',
-                                        'placeholder' => 'Nhập E-mail của bạn',
                                         'autofocus' => 'autofocus'
                                     ])
                                 ?>
@@ -62,7 +61,6 @@
                                         [
                                             'class' => 'form-control',
                                             'id' => 'password',
-                                            'placeholder' => '***************',
                                             'aria-describedby' => 'password'
                                         ])
                                     ?>

@@ -137,5 +137,38 @@
                 </li>
             </ul>
         </li>
+
+        <!-- UI Manager -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Quản lý giao diện</span>
+        </li>
+
+        <!-- -- Slider Manager -->
+        <li class="menu-item <?= getMenuActive(route_to('admin.slider.index'), '*') ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-slideshow"></i>
+                <div class="text-capitalize">Slider</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item <?= getMenuActive(route_to('admin.slider.index')) ?>">
+                    <a href="<?= route_to('admin.slider.index') ?>" class="menu-link">
+                        <div class="text-capitalize">Danh sách</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.slider.create')) ?>">
+                    <a href="<?= route_to('admin.slider.create') ?>" class="menu-link">
+                        <div class="text-capitalize">Thêm mới</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.slider.recycle')) ?>">
+                    <a href="<?= route_to('admin.slider.recycle') ?>" class="menu-link">
+                        <div class="text-capitalize">Thùng rác</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </aside>

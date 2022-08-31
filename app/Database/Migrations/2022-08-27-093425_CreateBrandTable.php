@@ -33,7 +33,7 @@ class CreateBrandTable extends Migration
                 'null' => true,
             ],
             'status' => [
-                'type' => 'INT',
+                'type' => 'TINYINT',
                 'constraint' => '1',
                 'default' => '1',
             ],

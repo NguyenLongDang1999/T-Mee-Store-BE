@@ -25,7 +25,7 @@ class UpdateUsersTable extends Migration
                 'after' => 'phone'
             ],
             'gender' => [
-                'type' => 'tinyint',
+                'type' => 'TINYINT',
                 'constraint' => 1,
                 'after' => 'avatar'
             ],
@@ -48,13 +48,13 @@ class UpdateUsersTable extends Migration
                 'after' => 'address'
             ],
             'provider_name' => [
-                'type' => 'varchar',
+                'type' => 'VARCHAR',
                 'constraint' => 255,
                 'null' => true,
                 'after' => 'birthdate'
             ],
             'provider_uid' => [
-                'type' => 'varchar',
+                'type' => 'VARCHAR',
                 'constraint' => 255,
                 'null' => true,
                 'after' => 'provider_name'
