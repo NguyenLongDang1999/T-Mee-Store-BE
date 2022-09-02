@@ -112,6 +112,13 @@ defined('PATH_IMAGE_DEFAULT') || define('PATH_IMAGE_DEFAULT', 'assets/img/defaul
 defined('PATH_CATEGORY_IMAGE') || define('PATH_CATEGORY_IMAGE', 'uploads/category/');
 defined('PATH_BRAND_IMAGE') || define('PATH_BRAND_IMAGE', 'uploads/brand/');
 defined('PATH_SLIDER_IMAGE') || define('PATH_SLIDER_IMAGE', 'uploads/slider/');
+defined('PATH_USER_IMAGE') || define('PATH_USER_IMAGE', 'uploads/users/');
+
+/**
+ * Gender
+ */
+defined('GENDER_MALE') || define('GENDER_MALE', 1);
+defined('GENDER_FEMALE') || define('GENDER_FEMALE', 0);
 
 /**
  * Path CMS

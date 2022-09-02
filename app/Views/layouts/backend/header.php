@@ -13,21 +13,41 @@
                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                        data-bs-toggle="dropdown">
                         <div class="avatar avatar-online">
-                            <img src="../../assets/img/avatars/1.png" alt class="rounded-circle"/>
+                            <?= img(
+                                auth()->user()->avatar ?? PATH_IMAGE_DEFAULT,
+                                false,
+                                [
+                                    'class' => 'rounded-circle user-show',
+                                    'data-user-avatar' => auth()->user()->avatar ?? PATH_IMAGE_DEFAULT,
+                                    'alt' => esc(auth()->user()->full_name ?? ''),
+                                    'title' => esc(auth()->user()->full_name ?? '')
+                                ]
+                            ) ?>
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <a class="dropdown-item" href="pages-account-settings-account.html">
+                            <a class="dropdown-item" href="">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar avatar-online">
-                                            <img src="../../assets/img/avatars/1.png" alt
-                                                 class="rounded-circle"/>
+                                            <?= img(
+                                                auth()->user()->avatar ?? PATH_IMAGE_DEFAULT,
+                                                false,
+                                                [
+                                                    'class' => 'rounded-circle user-show',
+                                                    'data-user-avatar' => auth()->user()->avatar ?? PATH_IMAGE_DEFAULT,
+                                                    'alt' => esc(auth()->user()->full_name ?? ''),
+                                                    'title' => esc(auth()->user()->full_name ?? '')
+                                                ]
+                                            ) ?>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <span class="fw-semibold d-block lh-1">John Doe</span>
+                                        <span class="fw-semibold d-block lh-1 text-capitalize user-show"
+                                              data-user-full_name="<?= esc(uppercaseFirstCharacter(auth()->user()->full_name ?? '')) ?>">
+                                            <?= esc(uppercaseFirstCharacter(auth()->user()->full_name ?? '')) ?>
+                                        </span>
                                         <small>Admin</small>
                                     </div>
                                 </div>
@@ -37,9 +57,9 @@
                             <div class="dropdown-divider"></div>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="">
+                            <a class="dropdown-item" href="<?= route_to('admin.users.profile') ?>">
                                 <i class="bx bx-user me-2"></i>
-                                <span class="align-middle">My Profile</span>
+                                <span class="align-middle text-capitalize">Thông tin cá nhân</span>
                             </a>
                         </li>
                         <li>

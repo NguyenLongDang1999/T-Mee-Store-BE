@@ -42,8 +42,7 @@ class UpdateUsersTable extends Migration
                 'after' => 'job'
             ],
             'birthdate' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
+                'type' => 'DATE',
                 'null' => true,
                 'after' => 'address'
             ],

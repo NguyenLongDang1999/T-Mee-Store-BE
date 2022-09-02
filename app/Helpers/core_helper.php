@@ -2,6 +2,7 @@
 
 use CodeIgniter\HTTP\RedirectResponse;
 use Config\Services;
+use CodeIgniter\I18n\Time;
 
 function getMenuActive($patterns, $open = false, $activeClass = "active")
 {
@@ -23,6 +24,11 @@ function statusOption(): array
     ];
 }
 
+function uppercaseFirstCharacter($string): string
+{
+    return ucwords(strtolower($string));
+}
+
 function featuredOption(): array
 {
     return [
@@ -30,6 +36,27 @@ function featuredOption(): array
         FEATURED_ACTIVE => 'Nổi bật',
         FEATURED_INACTIVE => 'Không nổi bật'
     ];
+}
+
+function genderOption(): array
+{
+    return [
+        GENDER_MALE => 'Nam',
+        GENDER_FEMALE => 'Nữ'
+    ];
+}
+
+function arraySearchValues($value, $array)
+{
+    if (is_array($array)) {
+        foreach ($array as $k => $v) {
+            if ($k === intval($value)) {
+                return $v;
+            }
+        }
+    }
+
+    return false;
 }
 
 function convertImageWebp($fileName): string
@@ -76,4 +103,12 @@ function imageManipulation($data): bool
     deleteImage($withFile);
 
     return $image->save($data['savePath']);
+}
+
+/**
+ * @throws Exception
+ */
+function dateFormat($date)
+{
+    return Time::parse($date)->toLocalizedString('dd-MM-yyyy');
 }

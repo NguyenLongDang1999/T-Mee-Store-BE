@@ -170,5 +170,38 @@
                 </li>
             </ul>
         </li>
+
+        <!-- UI Manager -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Quản lý giao diện</span>
+        </li>
+
+        <!-- -- Account Manager -->
+        <li class="menu-item <?= getMenuActive(route_to('admin.users.index'), '*') ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div class="text-capitalize">Quản lý tài khoản</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item <?= getMenuActive(route_to('admin.users.index')) ?>">
+                    <a href="<?= route_to('admin.users.index') ?>" class="menu-link">
+                        <div class="text-capitalize">Danh sách</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.users.create')) ?>">
+                    <a href="<?= route_to('admin.users.create') ?>" class="menu-link">
+                        <div class="text-capitalize">Thêm mới</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.users.recycle')) ?>">
+                    <a href="<?= route_to('admin.users.recycle') ?>" class="menu-link">
+                        <div class="text-capitalize">Thùng rác</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </aside>

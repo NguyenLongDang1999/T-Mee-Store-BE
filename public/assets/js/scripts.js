@@ -9,6 +9,7 @@ $(function () {
 
     // Variables
     const bootstrapSelect = $('.bootstrap-select'),
+        flatpickrDate = $('.flatpickr-date'),
         imageFileInput = $('.image-file-input'),
         imageFileReset = $('.image-file-reset'),
         name = $('#name'),
@@ -19,6 +20,15 @@ $(function () {
     // Plugins
     if (bootstrapSelect.length) {
         bootstrapSelect.selectpicker()
+    }
+
+    if (flatpickrDate.length) {
+        flatpickrDate.flatpickr({
+            maxDate: 'today',
+            dateFormat: 'Y-m-d',
+            altInput: true,
+            altFormat: 'd-m-Y',
+        });
     }
 
     // Methods

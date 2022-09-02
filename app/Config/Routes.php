@@ -6,6 +6,7 @@ use App\Controllers\Backend\BrandController;
 use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\CategoryController;
 use App\Controllers\Backend\SliderController;
+use App\Controllers\Backend\UsersController;
 
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
@@ -113,6 +114,15 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Recycle Page
         $routes->get('recycle', [SliderController::class, 'recycle'], ['as' => 'admin.slider.recycle']);
         $routes->get('get-list-recycle', [SliderController::class, 'getListRecycle'], ['as' => 'admin.slider.getListRecycle']);
+    });
+
+    // Users
+    $routes->group('users', static function ($routes) {
+        // Profile Page
+        $routes->get('profile', [UsersController::class, 'index'], ['as' => 'admin.users.profile']);
+
+        // Update Profile
+        $routes->post('(:num)/update', [UsersController::class, 'update'], ['as' => 'admin.users.update']);
     });
 });
 
