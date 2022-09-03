@@ -19,15 +19,10 @@ class UpdateUsersTable extends Migration
                 'constraint' => '30',
                 'after' => 'full_name'
             ],
-            'avatar' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-                'after' => 'phone'
-            ],
             'gender' => [
                 'type' => 'TINYINT',
                 'constraint' => 1,
-                'after' => 'avatar'
+                'after' => 'phone'
             ],
             'job' => [
                 'type' => 'VARCHAR',

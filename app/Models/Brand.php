@@ -17,7 +17,6 @@ class Brand extends Model
         'name',
         'slug',
         'description',
-        'image',
         'status',
         'deleted_at'
     ];
@@ -41,27 +40,31 @@ class Brand extends Model
 
     public function getList($input = array()): array
     {
-        $model = $this->select('id, name, image, status, created_at, updated_at');
+        $model = $this->select('brand.id, brand.name, brand.status, brand.created_at, brand.updated_at, images.url as image')
+            ->where('images.image_type', MODULE_BRAND)
+            ->join('images', 'images.relation_id = brand.id', 'left');
+
         return $this->searchBrandList($input, $model);
     }
 
     public function getListRecycle($input = array()): array
     {
-        $model = $this->select('id, name, image, status, created_at, updated_at')->onlyDeleted();
+        $model = $this->select('brand.id, brand.name, brand.status, brand.created_at, brand.updated_at, images.url as image')
+            ->where('images.image_type', MODULE_BRAND)
+            ->join('images', 'images.relation_id = brand.id', 'left')
+            ->onlyDeleted();
+
         return $this->searchBrandList($input, $model);
     }
 
     public function getBrandByID($id)
     {
-        return $this->select('id, name, slug, description, status, image')
-            ->where('id', $id)
+        return $this->select('brand.id, brand.name, brand.slug, brand.description, brand.status, images.url as image')
+            ->where('images.image_type', MODULE_BRAND)
+            ->where('brand.id', $id)
+            ->join('images', 'images.relation_id = brand.id', 'left')
             ->withDeleted()
             ->first();
-    }
-
-    public function getMultiImageBrand($id): array
-    {
-        return $this->select('id, image')->whereIn('id', $id)->withDeleted()->findAll();
     }
 
     /**
@@ -101,10 +104,5 @@ class Brand extends Model
         $result['model'] = $model->findAll($input['iDisplayLength'], $input['iDisplayStart']);
 
         return $result;
-    }
-
-    public function brandExistSlug($input)
-    {
-        return $this->select('id')->where('slug', $input)->countAllResults();
     }
 }

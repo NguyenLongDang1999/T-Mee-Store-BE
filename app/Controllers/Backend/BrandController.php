@@ -4,6 +4,7 @@ namespace App\Controllers\Backend;
 
 use App\Controllers\BaseController;
 use App\Models\Brand;
+use App\Models\Images;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -12,10 +13,12 @@ use ReflectionException;
 class BrandController extends BaseController
 {
     protected Brand $brand;
+    protected Images $images;
 
     public function __construct()
     {
         $this->brand = new Brand();
+        $this->images = new Images();
     }
 
     public function index(): string
@@ -56,12 +59,7 @@ class BrandController extends BaseController
      */
     public function store(): RedirectResponse
     {
-        $input = $this->request->getPost([
-            'name',
-            'slug',
-            'description',
-            'status'
-        ]);
+        $input = $this->request->getPost();
 
         if (!$this->brand->insert($input)) {
             return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
@@ -69,19 +67,23 @@ class BrandController extends BaseController
 
         $file = $this->request->getFile('image');
         $getID = $this->brand->getInsertID();
-        $imageFile = NULL;
+        $imageURL = PATH_IMAGE_DEFAULT;
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $imageFile = $this->brandUploadImage($getID, $file);
+                $imageURL = $this->serviceUploadImage($getID, $file);
             }
         }
 
-        if ($this->brand->update($getID, ['image' => $imageFile])) {
-            return redirectMessage('admin.brand.index', 'success', "Thương hiệu <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
+        if (!$this->images->insert([
+            'url' => $imageURL,
+            'relation_id' => $getID,
+            'image_type' => MODULE_BRAND
+        ])) {
+            return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
         }
 
-        return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
+        return redirectMessage('admin.brand.index', 'success', "Thương hiệu <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
     }
 
     public function edit($id): string
@@ -96,24 +98,25 @@ class BrandController extends BaseController
      */
     public function update($id): RedirectResponse
     {
-        $input = $this->request->getPost([
-            'name',
-            'slug',
-            'description',
-            'status',
-            'imageRoot'
-        ]);
-
+        $input = $this->request->getPost();
         $input['id'] = $id;
 
         $file = $this->request->getFile('image');
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $input['image'] = $this->brandUploadImage($id, $file);
+                $this->images->set('url', $this->serviceUploadImage($id, $file));
+                $this->images->where('relation_id', $id);
+                $this->images->where('image_type', MODULE_BRAND);
+
+                if (!$this->images->update()) {
+                    return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
+                }
+
                 deleteImage($input['imageRoot']);
             }
         }
+
         if ($this->brand->update($id, $input)) {
             return redirectMessage('admin.brand.index', 'success', "Thương hiệu <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");
         }
@@ -151,8 +154,8 @@ class BrandController extends BaseController
 
         if (isset($result['chk']) && is_array($result['chk'])) {
             if ($purge) {
-                $getMultiImageBrand = $this->brand->getMultiImageBrand($result['chk']);
-                deleteMultipleImage(PATH_BRAND_IMAGE, $getMultiImageBrand);
+                $getImagesMultiple = $this->images->getImagesMultiple($result['chk'], MODULE_BRAND);
+                deleteMultipleImage(PATH_BRAND_IMAGE, $getImagesMultiple);
             }
 
             if ($this->brand->delete($result['chk'], $purge)) {
@@ -168,8 +171,12 @@ class BrandController extends BaseController
 
     public function brandExistSlug(): ResponseInterface
     {
-        $input = $this->request->getPost('slug');
-        $result = $this->brand->brandExistSlug($input);
+        $input = $this->request->getPost();
+        $result = $this->brand->select('id')
+            ->where('id !=', $input['id'])
+            ->where('slug', $input['slug'])
+            ->countAllResults();
+
         $isValid = !($result > 0);
 
         return $this->response->setJSON([
@@ -177,7 +184,7 @@ class BrandController extends BaseController
         ]);
     }
 
-    private function brandUploadImage($id, UploadedFile $file): string
+    private function serviceUploadImage($id, UploadedFile $file): string
     {
         $path = PATH_BRAND_IMAGE . $id . '/';
 
@@ -192,8 +199,6 @@ class BrandController extends BaseController
             'resize' => [
                 'resizeX' => '200',
                 'resizeY' => '200',
-                'ratio' => false,
-                'masterDim' => 'auto'
             ]
         ];
 

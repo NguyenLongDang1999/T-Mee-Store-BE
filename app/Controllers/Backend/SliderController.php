@@ -4,6 +4,7 @@ namespace App\Controllers\Backend;
 
 use App\Controllers\BaseController;
 use App\Models\Slider;
+use App\Models\Images;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -12,10 +13,12 @@ use ReflectionException;
 class SliderController extends BaseController
 {
     protected Slider $slider;
+    protected Images $images;
 
     public function __construct()
     {
         $this->slider = new Slider();
+        $this->images = new Images();
     }
 
     public function index(): string
@@ -56,13 +59,7 @@ class SliderController extends BaseController
      */
     public function store(): RedirectResponse
     {
-        $input = $this->request->getPost([
-            'name',
-            'url',
-            'description',
-            'status',
-            'sort'
-        ]);
+        $input = $this->request->getPost();
 
         if (!$this->slider->insert($input)) {
             return redirectMessage('admin.slider.index', 'error', MESSAGE_ERROR);
@@ -70,19 +67,23 @@ class SliderController extends BaseController
 
         $file = $this->request->getFile('image');
         $getID = $this->slider->getInsertID();
-        $imageFile = NULL;
+        $imageURL = PATH_IMAGE_DEFAULT;
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $imageFile = $this->SliderUploadImage($getID, $file);
+                $imageURL = $this->serviceUploadImage($getID, $file);
             }
         }
 
-        if ($this->slider->update($getID, ['image' => $imageFile])) {
-            return redirectMessage('admin.slider.index', 'success', "Slider <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
+        if (!$this->images->insert([
+            'url' => $imageURL,
+            'relation_id' => $getID,
+            'image_type' => MODULE_SLIDER
+        ])) {
+            return redirectMessage('admin.slider.index', 'error', MESSAGE_ERROR);
         }
 
-        return redirectMessage('admin.slider.index', 'error', MESSAGE_ERROR);
+        return redirectMessage('admin.slider.index', 'success', "Slider <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
     }
 
     public function edit($id): string
@@ -97,22 +98,21 @@ class SliderController extends BaseController
      */
     public function update($id): RedirectResponse
     {
-        $input = $this->request->getPost([
-            'name',
-            'slug',
-            'description',
-            'status',
-            'sort',
-            'imageRoot'
-        ]);
-
+        $input = $this->request->getPost();
         $input['id'] = $id;
 
         $file = $this->request->getFile('image');
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $input['image'] = $this->SliderUploadImage($id, $file);
+                $this->images->set('url', $this->serviceUploadImage($id, $file));
+                $this->images->where('relation_id', $id);
+                $this->images->where('image_type', MODULE_SLIDER);
+
+                if (!$this->images->update()) {
+                    return redirectMessage('admin.slider.index', 'error', MESSAGE_ERROR);
+                }
+
                 deleteImage($input['imageRoot']);
             }
         }
@@ -153,8 +153,8 @@ class SliderController extends BaseController
 
         if (isset($result['chk']) && is_array($result['chk'])) {
             if ($purge) {
-                $getMultiImageSlider = $this->slider->getMultiImageSlider($result['chk']);
-                deleteMultipleImage(PATH_SLIDER_IMAGE, $getMultiImageSlider);
+                $getImagesMultiple = $this->images->getImagesMultiple($result['chk'], MODULE_SLIDER);
+                deleteMultipleImage(PATH_SLIDER_IMAGE, $getImagesMultiple);
             }
 
             if ($this->slider->delete($result['chk'], $purge)) {
@@ -168,10 +168,15 @@ class SliderController extends BaseController
         return $this->response->setJSON($data);
     }
 
-    public function SliderExistSlug(): ResponseInterface
+    public function sliderExistSlug(): ResponseInterface
     {
-        $input = $this->request->getPost('slug');
-        $result = $this->slider->sliderExistSlug($input);
+        $input = $this->request->getPost();
+        $result = $this->slider
+            ->select('id')
+            ->where('id !=', $input['id'])
+            ->where('url', $input['url'])
+            ->countAllResults();
+
         $isValid = !($result > 0);
 
         return $this->response->setJSON([
@@ -179,7 +184,7 @@ class SliderController extends BaseController
         ]);
     }
 
-    private function SliderUploadImage($id, UploadedFile $file): string
+    private function serviceUploadImage($id, UploadedFile $file): string
     {
         $path = PATH_SLIDER_IMAGE . $id . '/';
 
@@ -193,9 +198,7 @@ class SliderController extends BaseController
             'savePath' => $savePath,
             'resize' => [
                 'resizeX' => '1900',
-                'resizeY' => '600',
-                'ratio' => false,
-                'masterDim' => 'auto'
+                'resizeY' => '600'
             ]
         ];
 

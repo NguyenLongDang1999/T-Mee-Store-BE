@@ -4,6 +4,7 @@ namespace App\Controllers\Backend;
 
 use App\Controllers\BaseController;
 use App\Models\Category;
+use App\Models\Images;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -12,10 +13,12 @@ use ReflectionException;
 class CategoryController extends BaseController
 {
     protected Category $category;
+    protected Images $images;
 
     public function __construct()
     {
         $this->category = new Category();
+        $this->images = new Images();
     }
 
     public function index(): string
@@ -59,17 +62,7 @@ class CategoryController extends BaseController
      */
     public function store(): RedirectResponse
     {
-        $input = $this->request->getPost([
-            'name',
-            'slug',
-            'parent_id',
-            'description',
-            'status',
-            'featured',
-            'meta_title',
-            'meta_keyword',
-            'meta_description'
-        ]);
+        $input = $this->request->getPost();
 
         if (!$this->category->insert($input)) {
             return redirectMessage('admin.category.index', 'error', MESSAGE_ERROR);
@@ -77,19 +70,23 @@ class CategoryController extends BaseController
 
         $file = $this->request->getFile('image');
         $getID = $this->category->getInsertID();
-        $imageFile = NULL;
+        $imageURL = PATH_IMAGE_DEFAULT;
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $imageFile = $this->categoryUploadImage($getID, $file);
+                $imageURL = $this->serviceUploadImage($getID, $file);
             }
         }
 
-        if ($this->category->update($getID, ['image' => $imageFile])) {
-            return redirectMessage('admin.category.index', 'success', "Danh mục <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
+        if (!$this->images->insert([
+            'url' => $imageURL,
+            'relation_id' => $getID,
+            'image_type' => MODULE_CATEGORY
+        ])) {
+            return redirectMessage('admin.category.index', 'error', MESSAGE_ERROR);
         }
 
-        return redirectMessage('admin.category.index', 'error', MESSAGE_ERROR);
+        return redirectMessage('admin.category.index', 'success', "Danh mục <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
     }
 
     public function edit($id): string
@@ -105,29 +102,25 @@ class CategoryController extends BaseController
      */
     public function update($id): RedirectResponse
     {
-        $input = $this->request->getPost([
-            'name',
-            'slug',
-            'parent_id',
-            'description',
-            'status',
-            'featured',
-            'meta_title',
-            'meta_keyword',
-            'meta_description',
-            'imageRoot'
-        ]);
-
+        $input = $this->request->getPost();
         $input['id'] = $id;
 
         $file = $this->request->getFile('image');
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $input['image'] = $this->categoryUploadImage($id, $file);
+                $this->images->set('url', $this->serviceUploadImage($id, $file));
+                $this->images->where('relation_id', $id);
+                $this->images->where('image_type', MODULE_CATEGORY);
+
+                if (!$this->images->update()) {
+                    return redirectMessage('admin.category.index', 'error', MESSAGE_ERROR);
+                }
+
                 deleteImage($input['imageRoot']);
             }
         }
+
         if ($this->category->update($id, $input)) {
             return redirectMessage('admin.category.index', 'success', "Danh mục <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");
         }
@@ -173,8 +166,8 @@ class CategoryController extends BaseController
         if (isset($result['chk']) && is_array($result['chk'])) {
             if ($this->category->categoryCountParentID($result['chk']) == 0) {
                 if ($purge) {
-                    $getMultiImageCategory = $this->category->getMultiImageCategory($result['chk']);
-                    deleteMultipleImage(PATH_CATEGORY_IMAGE, $getMultiImageCategory);
+                    $getImagesMultiple = $this->images->getImagesMultiple($result['chk'], MODULE_CATEGORY);
+                    deleteMultipleImage(PATH_CATEGORY_IMAGE, $getImagesMultiple);
                 }
 
                 if ($this->category->delete($result['chk'], $purge)) {
@@ -195,8 +188,12 @@ class CategoryController extends BaseController
 
     public function categoryExistSlug(): ResponseInterface
     {
-        $input = $this->request->getPost('slug');
-        $result = $this->category->categoryExistSlug($input);
+        $input = $this->request->getPost();
+        $result = $this->category->select('id')
+            ->where('id !=', $input['id'])
+            ->where('slug', $input['slug'])
+            ->countAllResults();
+
         $isValid = !($result > 0);
 
         return $this->response->setJSON([
@@ -204,7 +201,7 @@ class CategoryController extends BaseController
         ]);
     }
 
-    private function categoryUploadImage($id, UploadedFile $file): string
+    private function serviceUploadImage($id, UploadedFile $file): string
     {
         $path = PATH_CATEGORY_IMAGE . $id . '/';
 
@@ -218,9 +215,7 @@ class CategoryController extends BaseController
             'savePath' => $savePath,
             'resize' => [
                 'resizeX' => '200',
-                'resizeY' => '200',
-                'ratio' => false,
-                'masterDim' => 'auto'
+                'resizeY' => '200'
             ]
         ];
 

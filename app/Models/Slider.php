@@ -18,7 +18,6 @@ class Slider extends Model
         'url',
         'sort',
         'description',
-        'image',
         'status',
         'deleted_at'
     ];
@@ -42,27 +41,31 @@ class Slider extends Model
 
     public function getList($input = array()): array
     {
-        $model = $this->select('id, name, image, sort, status, created_at, updated_at');
+        $model = $this->select('slider.id, slider.name, slider.sort, slider.status, slider.created_at, slider.updated_at, images.url as image')
+            ->where('images.image_type', MODULE_SLIDER)
+            ->join('images', 'images.relation_id = slider.id', 'left');
+
         return $this->searchSliderList($input, $model);
     }
 
     public function getListRecycle($input = array()): array
     {
-        $model = $this->select('id, name, image, sort, status, created_at, updated_at')->onlyDeleted();
+        $model = $this->select('slider.id, slider.name, slider.sort, slider.status, slider.created_at, slider.updated_at, images.url as image')
+            ->where('images.image_type', MODULE_SLIDER)
+            ->join('images', 'images.relation_id = slider.id', 'left')
+            ->onlyDeleted();
+
         return $this->searchSliderList($input, $model);
     }
 
     public function getSliderByID($id)
     {
-        return $this->select('id, name, url, sort, description, status, image')
-            ->where('id', $id)
+        return $this->select('slider.id, slider.name, slider.url, slider.sort, slider.description, slider.status, images.url as image')
+            ->where('images.image_type', MODULE_SLIDER)
+            ->where('slider.id', $id)
+            ->join('images', 'images.relation_id = slider.id', 'left')
             ->withDeleted()
             ->first();
-    }
-
-    public function getMultiImageSlider($id): array
-    {
-        return $this->select('id, image')->whereIn('id', $id)->withDeleted()->findAll();
     }
 
     /**
@@ -103,10 +106,5 @@ class Slider extends Model
         $result['model'] = $model->findAll($input['iDisplayLength'], $input['iDisplayStart']);
 
         return $result;
-    }
-
-    public function sliderExistSlug($input)
-    {
-        return $this->select('id')->where('slug', $input)->countAllResults();
     }
 }

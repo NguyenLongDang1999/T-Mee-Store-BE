@@ -140,3 +140,11 @@ defined('FORMAT_DATE') || define('FORMAT_DATE', 'd-m-Y');
  */
 defined('AUTH_LOGIN_SUCCESS') || define('AUTH_LOGIN_SUCCESS', 1);
 defined('AUTH_LOGIN_ERROR') || define('AUTH_LOGIN_ERROR', 0);
+
+/**
+ * Name Modules
+ */
+defined('MODULE_CATEGORY') || define('MODULE_CATEGORY', 'category');
+defined('MODULE_SLIDER') || define('MODULE_SLIDER', 'slider');
+defined('MODULE_BRAND') || define('MODULE_BRAND', 'brand');
+defined('MODULE_USER') || define('MODULE_USER', 'user');

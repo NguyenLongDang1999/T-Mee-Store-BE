@@ -27,11 +27,6 @@ class CreateSliderTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
-            'image' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-                'null' => true,
-            ],
             'status' => [
                 'type' => 'TINYINT',
                 'constraint' => '1',
@@ -56,7 +51,7 @@ class CreateSliderTable extends Migration
             ]
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addUniqueKey('slug');
+        $this->forge->addUniqueKey('url');
         $this->forge->createTable('slider');
     }
 

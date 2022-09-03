@@ -38,7 +38,6 @@ Brand <?= isset($row) ? 'Update' : 'Create' ?> Page
                                 max: 30,
                                 message: nameLabel + ' phải có độ dài từ 2 - 30 ký tự.'
                             },
-                            <?php if (!isset($row)) : ?>
                             remote: {
                                 headers: {
                                     "X-CSRF-TOKEN": meteCSRF,
@@ -50,11 +49,11 @@ Brand <?= isset($row) ? 'Update' : 'Create' ?> Page
                                 data: function () {
                                     return {
                                         slug: brandForm.querySelector('[name="slug"]').value,
+                                        id: brandForm.querySelector('[name="id"]').value
                                     };
                                 },
                                 url: url_exist_brand
                             },
-                            <?php endif ?>
                         }
                     },
                     description: {
@@ -100,6 +99,7 @@ Brand <?= isset($row) ? 'Update' : 'Create' ?> Page
     <div class="col-12">
         <?= form_open_multipart($routePost ?? '', ['id' => 'brand-form']) ?>
         <?= form_hidden('imageRoot', $row->image ?? '') ?>
+        <?= form_hidden('id', $row->id ?? '') ?>
 
         <div class="card mb-4">
             <h5 class="card-header text-capitalize">Thông tin cơ bản</h5>

@@ -42,7 +42,6 @@ Categories <?= isset($row) ? 'Update' : 'Create' ?> Page
                                 max: 30,
                                 message: nameLabel + ' phải có độ dài từ 2 - 30 ký tự.'
                             },
-                            <?php if (!isset($row)) : ?>
                             remote: {
                                 headers: {
                                     "X-CSRF-TOKEN": meteCSRF,
@@ -54,11 +53,11 @@ Categories <?= isset($row) ? 'Update' : 'Create' ?> Page
                                 data: function () {
                                     return {
                                         slug: categoryForm.querySelector('[name="slug"]').value,
+                                        id: categoryForm.querySelector('[name="id"]').value
                                     };
                                 },
                                 url: url_exist_category
                             },
-                            <?php endif ?>
                         }
                     },
                     parent_id: {
@@ -135,6 +134,7 @@ Categories <?= isset($row) ? 'Update' : 'Create' ?> Page
     <div class="col-12">
         <?= form_open_multipart($routePost ?? '', ['id' => 'category-form']) ?>
         <?= form_hidden('imageRoot', $row->image ?? '') ?>
+        <?= form_hidden('id', $row->id ?? '') ?>
 
         <div class="card mb-4">
             <h5 class="card-header text-capitalize">Thông tin cơ bản</h5>

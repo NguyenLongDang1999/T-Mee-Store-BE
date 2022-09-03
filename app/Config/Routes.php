@@ -105,7 +105,7 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Create Page
         $routes->get('create', [SliderController::class, 'create'], ['as' => 'admin.slider.create']);
         $routes->post('store', [SliderController::class, 'store'], ['as' => 'admin.slider.store']);
-        $routes->post('brand-exist', [SliderController::class, 'brandExistSlug'], ['as' => 'admin.slider.brandExistSlug']);
+        $routes->post('slider-exist', [SliderController::class, 'sliderExistSlug'], ['as' => 'admin.slider.sliderExistSlug']);
 
         // Edit Page
         $routes->get('(:num)/edit', [SliderController::class, 'edit'], ['as' => 'admin.slider.edit']);

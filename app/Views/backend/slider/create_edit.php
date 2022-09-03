@@ -39,23 +39,6 @@ Slider <?= isset($row) ? 'Update' : 'Create' ?> Page
                                 max: 30,
                                 message: nameLabel + ' phải có độ dài từ 2 - 30 ký tự.'
                             },
-                            <?php if (!isset($row)) : ?>
-                            remote: {
-                                headers: {
-                                    "X-CSRF-TOKEN": meteCSRF,
-                                },
-                                async: true,
-                                cache: false,
-                                message: nameLabel + ' đã tồn tại. Vui lòng kiểm tra lại!',
-                                method: 'POST',
-                                data: function () {
-                                    return {
-                                        slug: sliderForm.querySelector('[name="slug"]').value,
-                                    };
-                                },
-                                url: url_exist_slider
-                            },
-                            <?php endif ?>
                         }
                     },
                     url: {
@@ -66,6 +49,22 @@ Slider <?= isset($row) ? 'Update' : 'Create' ?> Page
                             },
                             uri: {
                                 message: urlLabel + ' không đúng định dạng.',
+                            },
+                            remote: {
+                                headers: {
+                                    "X-CSRF-TOKEN": meteCSRF,
+                                },
+                                async: true,
+                                cache: false,
+                                message: urlLabel + ' đã tồn tại. Vui lòng kiểm tra lại!',
+                                method: 'POST',
+                                data: function () {
+                                    return {
+                                        url: sliderForm.querySelector('[name="url"]').value,
+                                        id: sliderForm.querySelector('[name="id"]').value
+                                    };
+                                },
+                                url: url_exist_slider
                             },
                         }
                     },
@@ -112,6 +111,7 @@ Slider <?= isset($row) ? 'Update' : 'Create' ?> Page
     <div class="col-12">
         <?= form_open_multipart($routePost ?? '', ['id' => 'slider-form']) ?>
         <?= form_hidden('imageRoot', $row->image ?? '') ?>
+        <?= form_hidden('id', $row->id ?? '') ?>
 
         <div class="card mb-4">
             <h5 class="card-header text-capitalize">Thông tin cơ bản</h5>
@@ -149,16 +149,6 @@ Slider <?= isset($row) ? 'Update' : 'Create' ?> Page
                     </div>
 
                     <div class="col-md-6">
-                        <?= form_label('Mô tả Slider', 'description', ['class' => 'form-label']) ?>
-                        <?= form_input(
-                            'description',
-                            $row->description ?? '',
-                            ['class' => 'form-control',
-                                'id' => 'description'])
-                        ?>
-                    </div>
-
-                    <div class="col-md-6">
                         <?= form_label('Trạng thái', 'status', ['class' => 'form-label']) ?>
                         <?= form_dropdown(
                             'status',
@@ -168,6 +158,16 @@ Slider <?= isset($row) ? 'Update' : 'Create' ?> Page
                                 'data-style' => 'btn-default text-capitalize',
                                 'data-size' => 8,
                                 'id' => 'status'])
+                        ?>
+                    </div>
+
+                    <div class="col-12">
+                        <?= form_label('Mô tả Slider', 'description', ['class' => 'form-label']) ?>
+                        <?= form_input(
+                            'description',
+                            $row->description ?? '',
+                            ['class' => 'form-control',
+                                'id' => 'description'])
                         ?>
                     </div>
                 </div>

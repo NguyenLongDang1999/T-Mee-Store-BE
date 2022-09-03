@@ -6,7 +6,6 @@ use CodeIgniter\Shield\Models\UserModel;
 
 class Users extends UserModel
 {
-
     protected $allowedFields = [
         'username',
         'full_name',

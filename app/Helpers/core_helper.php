@@ -73,7 +73,7 @@ function redirectMessage($route, $key, $message): RedirectResponse
 
 function deleteImage($path)
 {
-    if (file_exists($path)) {
+    if (file_exists($path) && $path !== PATH_IMAGE_DEFAULT) {
         unlink($path);
     }
 }
@@ -82,8 +82,8 @@ function deleteMultipleImage($path, $array)
 {
     if (count($array) > 0) {
         foreach ($array as $item) {
-            delete_files(FCPATH . $path . $item->id . '/', true);
-            is_dir($path . $item->id) && rmdir($path . $item->id . '/');
+            delete_files(FCPATH . $path . $item->relation_id . '/', true);
+            is_dir($path . $item->relation_id) && rmdir($path . $item->relation_id . '/');
         }
     }
 }
@@ -98,7 +98,7 @@ function imageManipulation($data): bool
     }
 
     $image->withFile($withFile);
-    $image->resize($data['resize']['resizeX'], $data['resize']['resizeY'], $data['resize']['ratio'], $data['resize']['masterDim']);
+    $image->resize($data['resize']['resizeX'], $data['resize']['resizeY'], true);
     $image->convert(IMAGETYPE_WEBP);
     deleteImage($withFile);
 
