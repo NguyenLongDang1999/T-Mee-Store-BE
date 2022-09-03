@@ -57,7 +57,7 @@
                             <div class="dropdown-divider"></div>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="<?= route_to('admin.users.profile') ?>">
+                            <a class="dropdown-item" href="<?= route_to('admin.users.activity') ?>">
                                 <i class="bx bx-user me-2"></i>
                                 <span class="align-middle text-capitalize">Thông tin cá nhân</span>
                             </a>
@@ -87,9 +87,9 @@
                             <div class="dropdown-divider"></div>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="" target="_blank">
+                            <a class="dropdown-item text-capitalize" href="<?= route_to('logout') ?>">
                                 <i class="bx bx-power-off me-2"></i>
-                                <span class="align-middle">Log Out</span>
+                                <span class="align-middle">Đăng xuất</span>
                             </a>
                         </li>
                     </ul>

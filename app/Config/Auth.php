@@ -44,7 +44,7 @@ class Auth extends ShieldAuth
     public array $redirects = [
         'register' => '/',
         'login'    => PATH_CMS_ADMIN,
-        'logout'   => 'login',
+        'logout'   => PATH_CMS_ADMIN . '/login',
     ];
 
     /**

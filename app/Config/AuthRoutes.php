@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeIgniter\Shield\Config;
+namespace Config;
 
-use CodeIgniter\Config\BaseConfig;
+use CodeIgniter\Shield\Config\AuthRoutes as ShieldAuthRoutes;
 
-class AuthRoutes extends BaseConfig
+class AuthRoutes extends ShieldAuthRoutes
 {
     public array $routes = [
         'register' => [
@@ -58,6 +58,7 @@ class AuthRoutes extends BaseConfig
                 'get',
                 'logout',
                 'LoginController::logoutAction',
+                'logout'
             ],
         ],
         'auth-actions' => [

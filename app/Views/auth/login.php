@@ -71,7 +71,7 @@
 
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <?= form_checkbox('remember', '', false, ['class' => 'form-check-input', 'remember']) ?>
+                                    <?= form_checkbox('remember', '', false, ['class' => 'form-check-input']) ?>
                                     <?= form_label('Giữ Đăng Nhập', 'remember', ['class' => 'form-check-label']) ?>
                                 </div>
                             </div>
@@ -131,6 +131,13 @@
                             submitButton: new FormValidation.plugins.SubmitButton(),
                             defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
                             autoFocus: new FormValidation.plugins.AutoFocus()
+                        },
+                        init: instance => {
+                            instance.on('plugins.message.placed', function (e) {
+                                if (e.element.parentElement.classList.contains('input-group')) {
+                                    e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+                                }
+                            });
                         }
                     });
                 })();

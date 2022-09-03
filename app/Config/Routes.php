@@ -118,11 +118,15 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
 
     // Users
     $routes->group('users', static function ($routes) {
-        // Profile Page
-        $routes->get('profile', [UsersController::class, 'index'], ['as' => 'admin.users.profile']);
+        // Activity Page
+        $routes->get('activity', [UsersController::class, 'activity'], ['as' => 'admin.users.activity']);
 
-        // Update Profile
+        // Change Password Page
+        $routes->get('change-password', [UsersController::class, 'changePassword'], ['as' => 'admin.users.changePassword']);
+
+        // Update Users
         $routes->post('(:num)/update', [UsersController::class, 'update'], ['as' => 'admin.users.update']);
+        $routes->post('(:num)/change-password', [UsersController::class, 'postChangePassword'], ['as' => 'admin.users.postChangePassword']);
     });
 });
 

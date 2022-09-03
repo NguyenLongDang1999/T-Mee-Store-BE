@@ -134,3 +134,9 @@ defined('MESSAGE_ERROR') || define('MESSAGE_ERROR', 'Có lỗi xảy ra trong qu
  * DateTime
  */
 defined('FORMAT_DATE') || define('FORMAT_DATE', 'd-m-Y');
+
+/**
+ * Auth Login Status
+ */
+defined('AUTH_LOGIN_SUCCESS') || define('AUTH_LOGIN_SUCCESS', 1);
+defined('AUTH_LOGIN_ERROR') || define('AUTH_LOGIN_ERROR', 0);
