@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/backend/index') ?>
 
 <?= $this->section('title') ?>
-Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
+Attribute List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
 <?= $this->endSection() ?>
 
 <?= $this->section('pageCSS') ?>
@@ -23,21 +23,21 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
 <?= $this->include('components/_message') ?>
 
 <script>
-    let brandTable = $('#brand-table'),
-        url_delete_item = "<?= route_to('admin.brand.multiDelete') ?>",
-        url_status_item = "<?= route_to('admin.brand.multiStatus') ?>",
+    let attributeTable = $('#attribute-table'),
+        url_delete_item = "<?= route_to('admin.attribute.multiDelete') ?>",
+        url_status_item = "<?= route_to('admin.attribute.multiStatus') ?>",
         click_mode = 0,
         aLengthMenuGeneral = [
             [20, 50, 100, 500, 1000],
             [20, 50, 100, 500, 1000]
         ];
 
-    if (brandTable.length) {
-        var oTable = brandTable.DataTable({
+    if (attributeTable.length) {
+        var oTable = attributeTable.DataTable({
             "bServerSide": true,
             "bProcessing": true,
             "sPaginationType": "full_numbers",
-            "sAjaxSource": "<?= isset($recyclePage) ? route_to('admin.brand.getListRecycle') : route_to('admin.brand.getList') ?>",
+            "sAjaxSource": "<?= isset($recyclePage) ? route_to('admin.attribute.getListRecycle') : route_to('admin.attribute.getList') ?>",
             "bDeferRender": true,
             "bFilter": false,
             "bDestroy": true,
@@ -57,11 +57,11 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
                     "bSortable": false
                 },
                 {
-                    data: 'image',
-                    "bSortable": false
+                    data: 'name'
                 },
                 {
-                    data: 'name'
+                    data: 'category_name',
+                    "bSortable": false
                 },
                 {
                     data: 'status',
@@ -83,6 +83,10 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
                     aoData.push({
                         "name": "search[name]",
                         "value": $('#frmSearch input[name="search[name]"]').val()
+                    });
+                    aoData.push({
+                        "name": "search[category_id]",
+                        "value": $('#frmSearch select[name="search[category_id]"]').val()
                     });
                     aoData.push({
                         "name": "search[status]",
@@ -108,7 +112,7 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     render: function (data, type, full) {
                         const $editPages = full['edit_pages'];
                         const $name = full['name'];
@@ -210,7 +214,7 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
 
 <?= $this->section('breadcrumbs') ?>
 <li class="breadcrumb-item text-capitalize">
-    <a href="<?= route_to('admin.brand.index') ?>">Thương hiệu</a>
+    <a href="<?= route_to('admin.attribute.index') ?>">Thuộc tính sản phẩm</a>
 </li>
 
 <li class="breadcrumb-item text-capitalize active"><?= isset($recyclePage) ? 'Thùng rác' : 'Danh sách' ?></li>
@@ -220,16 +224,16 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
 <div class="row">
     <div class="col-12">
         <?php if (isset($recyclePage)) : ?>
-            <a href="<?= route_to('admin.brand.index') ?>" class="btn btn-label-danger mb-4">
+            <a href="<?= route_to('admin.attribute.index') ?>" class="btn btn-label-danger mb-4">
                 <span class="tf-icons bx bx-arrow-back"></span> Quay Lại
             </a>
 
         <?php else: ?>
-            <a href="<?= route_to('admin.brand.create') ?>" class="btn btn-label-primary mb-4">
+            <a href="<?= route_to('admin.attribute.create') ?>" class="btn btn-label-primary mb-4">
                 <span class="tf-icons bx bx-plus"></span> Thêm Mới
             </a>
 
-            <a href="<?= route_to('admin.brand.recycle') ?>" class="btn btn-label-secondary mb-4">
+            <a href="<?= route_to('admin.attribute.recycle') ?>" class="btn btn-label-secondary mb-4">
                 <span class="tf-icons bx bx-trash"></span> Thùng Rác
             </a>
         <?php endif; ?>
@@ -237,20 +241,20 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
 
     <div class="col-12">
         <div class="card mb-4">
-            <h5 class="card-header text-capitalize">Danh sách <?= isset($recyclePage) ? 'Thùng rác' : '' ?> thương
-                hiệu</h5>
+            <h5 class="card-header text-capitalize">Danh sách <?= isset($recyclePage) ? 'Thùng rác' : '' ?> thuộc tính
+                sản phẩm</h5>
 
             <div class="card-body">
                 <?= form_open(
-                    isset($recyclePage) ? route_to('admin.brand.getListRecycle') : route_to('admin.brand.getList'),
+                    isset($recyclePage) ? route_to('admin.attribute.getListRecycle') : route_to('admin.attribute.getList'),
                     [
                         'class' => 'row g-3',
                         'id' => 'frmSearch',
                         'method' => 'GET',
                         'onsubmit' => 'return false;'
                     ]) ?>
-                <div class="col-md-6">
-                    <?= form_label('Tiêu đề thương hiệu', 'search[name]', ['class' => 'form-label']) ?>
+                <div class="col-md-4">
+                    <?= form_label('Tên thuộc tính', 'search[name]', ['class' => 'form-label']) ?>
                     <?= form_input(
                         'search[name]',
                         '',
@@ -260,7 +264,21 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
                     ?>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <?= form_label('Danh mục', 'search[category_id]', ['class' => 'form-label']) ?>
+                    <?= form_dropdown(
+                        'search[category_id]',
+                        $getCategoryList ?? [],
+                        '',
+                        [
+                            'class' => 'bootstrap-select text-capitalize w-100',
+                            'data-style' => 'btn-default text-capitalize',
+                            'data-size' => 8
+                        ])
+                    ?>
+                </div>
+
+                <div class="col-md-4">
                     <?= form_label('Trạng thái', 'search[status]', ['class' => 'form-label']) ?>
                     <?= form_dropdown(
                         'search[status]',
@@ -358,13 +376,13 @@ Brand List <?= isset($recyclePage) ? 'Recycle' : '' ?> Page
 
                 <div class="col-12">
                     <?= form_open('', ['id' => 'frmTbList']) ?>
-                    <table class="dt-responsive table table-bordered text-nowrap" id="brand-table">
+                    <table class="dt-responsive table table-bordered text-nowrap" id="attribute-table">
                         <thead>
                             <tr>
                                 <th></th>
                                 <th></th>
-                                <th>Hình đại diện</th>
-                                <th>Tên thương hiệu</th>
+                                <th>Tên thuộc tính</th>
+                                <th>Danh mục</th>
                                 <th>Trạng thái</th>
                                 <th>Ngày tạo</th>
                                 <th>Ngày sửa</th>

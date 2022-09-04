@@ -71,7 +71,7 @@
 
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <?= form_checkbox('remember', '', false, ['class' => 'form-check-input']) ?>
+                                    <input type="checkbox" name="remember" class="form-check-input">
                                     <?= form_label('Giữ Đăng Nhập', 'remember', ['class' => 'form-check-label']) ?>
                                 </div>
                             </div>

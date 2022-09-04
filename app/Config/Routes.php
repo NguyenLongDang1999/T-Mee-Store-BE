@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Controllers\Backend\AttributeController;
 use App\Controllers\Backend\BrandController;
 use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\CategoryController;
@@ -114,6 +115,27 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Recycle Page
         $routes->get('recycle', [SliderController::class, 'recycle'], ['as' => 'admin.slider.recycle']);
         $routes->get('get-list-recycle', [SliderController::class, 'getListRecycle'], ['as' => 'admin.slider.getListRecycle']);
+    });
+
+    // Attribute
+    $routes->group('attribute', static function ($routes) {
+        // Index Page
+        $routes->get('/', [AttributeController::class, 'index'], ['as' => 'admin.attribute.index']);
+        $routes->get('get-list', [AttributeController::class, 'getList'], ['as' => 'admin.attribute.getList']);
+        $routes->post('multi-status', [AttributeController::class, 'multiStatus'], ['as' => 'admin.attribute.multiStatus']);
+        $routes->post('multi-delete', [AttributeController::class, 'multiDelete'], ['as' => 'admin.attribute.multiDelete']);
+
+        // Create Page
+        $routes->get('create', [AttributeController::class, 'create'], ['as' => 'admin.attribute.create']);
+        $routes->post('store', [AttributeController::class, 'store'], ['as' => 'admin.attribute.store']);
+
+        // Edit Page
+        $routes->get('(:num)/edit', [AttributeController::class, 'edit'], ['as' => 'admin.attribute.edit']);
+        $routes->post('(:num)/update', [AttributeController::class, 'update'], ['as' => 'admin.attribute.update']);
+
+        // Recycle Page
+        $routes->get('recycle', [AttributeController::class, 'recycle'], ['as' => 'admin.attribute.recycle']);
+        $routes->get('get-list-recycle', [AttributeController::class, 'getListRecycle'], ['as' => 'admin.attribute.getListRecycle']);
     });
 
     // Users

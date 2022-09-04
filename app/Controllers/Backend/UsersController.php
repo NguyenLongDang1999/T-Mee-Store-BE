@@ -43,7 +43,7 @@ class UsersController extends BaseController
 
             if ($file) {
                 if ($file->isValid() && !$file->hasMoved()) {
-                    $input['avatar'] = $this->userUploadImage($id, $file);
+                    $input['avatar'] = $this->serviceUploadImage($id, $file);
                     deleteImage($input['imageRoot']);
                 }
             }
@@ -78,7 +78,7 @@ class UsersController extends BaseController
         return redirectMessage('admin.users.changePassword', 'error', MESSAGE_ERROR);
     }
 
-    private function userUploadImage($id, UploadedFile $file): string
+    private function serviceUploadImage($id, UploadedFile $file): string
     {
         $path = PATH_USER_IMAGE . $id . '/';
 
@@ -93,8 +93,6 @@ class UsersController extends BaseController
             'resize' => [
                 'resizeX' => '250',
                 'resizeY' => '250',
-                'ratio' => false,
-                'masterDim' => 'auto'
             ]
         ];
 
