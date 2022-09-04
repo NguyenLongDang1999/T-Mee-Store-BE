@@ -18,19 +18,19 @@ class Auth extends ShieldAuth
      * ////////////////////////////////////////////////////////////////////
      */
     public array $views = [
-        'login'                       => 'App\Views\auth\login',
-        'register'                    => '\CodeIgniter\Shield\Views\register',
-        'forgotPassword'              => '\CodeIgniter\Shield\Views\forgot_password',
-        'resetPassword'               => '\CodeIgniter\Shield\Views\reset_password',
-        'layout'                      => '\CodeIgniter\Shield\Views\layout',
-        'action_email_2fa'            => '\CodeIgniter\Shield\Views\email_2fa_show',
-        'action_email_2fa_verify'     => '\CodeIgniter\Shield\Views\email_2fa_verify',
-        'action_email_2fa_email'      => '\CodeIgniter\Shield\Views\email_2fa_email',
+        'login' => 'App\Views\auth\login',
+        'register' => '\CodeIgniter\Shield\Views\register',
+        'forgotPassword' => '\CodeIgniter\Shield\Views\forgot_password',
+        'resetPassword' => '\CodeIgniter\Shield\Views\reset_password',
+        'layout' => '\CodeIgniter\Shield\Views\layout',
+        'action_email_2fa' => '\CodeIgniter\Shield\Views\email_2fa_show',
+        'action_email_2fa_verify' => '\CodeIgniter\Shield\Views\email_2fa_verify',
+        'action_email_2fa_email' => '\CodeIgniter\Shield\Views\email_2fa_email',
         'action_email_activate_email' => '\CodeIgniter\Shield\Views\email_activate_email',
-        'action_email_activate_show'  => '\CodeIgniter\Shield\Views\email_activate_show',
-        'magic-link-login'            => '\CodeIgniter\Shield\Views\magic_link_form',
-        'magic-link-message'          => '\CodeIgniter\Shield\Views\magic_link_message',
-        'magic-link-email'            => '\CodeIgniter\Shield\Views\magic_link_email',
+        'action_email_activate_show' => '\CodeIgniter\Shield\Views\email_activate_show',
+        'magic-link-login' => '\CodeIgniter\Shield\Views\magic_link_form',
+        'magic-link-message' => '\CodeIgniter\Shield\Views\magic_link_message',
+        'magic-link-email' => '\CodeIgniter\Shield\Views\magic_link_email',
     ];
 
     /**
@@ -43,8 +43,8 @@ class Auth extends ShieldAuth
      */
     public array $redirects = [
         'register' => '/',
-        'login'    => PATH_CMS_ADMIN,
-        'logout'   => PATH_CMS_ADMIN . '/login',
+        'login' => PATH_CMS_ADMIN,
+        'logout' => PATH_CMS_ADMIN . '/login',
     ];
 
     /**
@@ -61,7 +61,7 @@ class Auth extends ShieldAuth
      * @var array<string, class-string<ActionInterface>|null>
      */
     public array $actions = [
-        'login'    => null,
+        'login' => null,
         'register' => null,
     ];
 
@@ -77,7 +77,7 @@ class Auth extends ShieldAuth
      * @var array<string, class-string<AuthenticatorInterface>>
      */
     public array $authenticators = [
-        'tokens'  => AccessTokens::class,
+        'tokens' => AccessTokens::class,
         'session' => Session::class,
     ];
 
@@ -133,7 +133,7 @@ class Auth extends ShieldAuth
      * --------------------------------------------------------------------
      * Determines whether users can register for the site.
      */
-    public bool $allowRegistration = true;
+    public bool $allowRegistration = false;
 
     /**
      * --------------------------------------------------------------------
@@ -180,10 +180,10 @@ class Auth extends ShieldAuth
      * @var array<string, bool|int|string>
      */
     public array $sessionConfig = [
-        'field'              => 'user',
-        'allowRemembering'   => true,
+        'field' => 'user',
+        'allowRemembering' => true,
         'rememberCookieName' => 'remember',
-        'rememberLength'     => 30 * DAY,
+        'rememberLength' => 30 * DAY,
     ];
 
     /**
@@ -313,7 +313,7 @@ class Auth extends ShieldAuth
     public int $hashMemoryCost = 2048;  // PASSWORD_ARGON2_DEFAULT_MEMORY_COST;
 
     public int $hashTimeCost = 4;       // PASSWORD_ARGON2_DEFAULT_TIME_COST;
-    public int $hashThreads  = 4;        // PASSWORD_ARGON2_DEFAULT_THREADS;
+    public int $hashThreads = 4;        // PASSWORD_ARGON2_DEFAULT_THREADS;
 
     /**
      * --------------------------------------------------------------------
