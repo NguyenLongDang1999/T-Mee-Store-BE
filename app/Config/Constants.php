@@ -113,6 +113,7 @@ defined('PATH_CATEGORY_IMAGE') || define('PATH_CATEGORY_IMAGE', 'uploads/categor
 defined('PATH_BRAND_IMAGE') || define('PATH_BRAND_IMAGE', 'uploads/brand/');
 defined('PATH_SLIDER_IMAGE') || define('PATH_SLIDER_IMAGE', 'uploads/slider/');
 defined('PATH_USER_IMAGE') || define('PATH_USER_IMAGE', 'uploads/users/');
+defined('PATH_PRODUCT_IMAGE') || define('PATH_PRODUCT_IMAGE', 'uploads/product/');
 
 /**
  * Gender
@@ -145,6 +146,13 @@ defined('AUTH_LOGIN_ERROR') || define('AUTH_LOGIN_ERROR', 0);
  * Name Modules
  */
 defined('MODULE_CATEGORY') || define('MODULE_CATEGORY', 'category');
+defined('MODULE_PRODUCT') || define('MODULE_PRODUCT', 'product');
 defined('MODULE_SLIDER') || define('MODULE_SLIDER', 'slider');
 defined('MODULE_BRAND') || define('MODULE_BRAND', 'brand');
 defined('MODULE_USER') || define('MODULE_USER', 'user');
+
+/**
+ * Type Discount
+ */
+defined('TYPE_DISCOUNT_VND') || define('TYPE_DISCOUNT_VND', 0);
+defined('TYPE_DISCOUNT_PERCENT') || define('TYPE_DISCOUNT_PERCENT', 1);

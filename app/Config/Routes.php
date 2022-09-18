@@ -6,6 +6,7 @@ use App\Controllers\Backend\AttributeController;
 use App\Controllers\Backend\BrandController;
 use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\CategoryController;
+use App\Controllers\Backend\ProductController;
 use App\Controllers\Backend\SliderController;
 use App\Controllers\Backend\UsersController;
 
@@ -136,6 +137,29 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Recycle Page
         $routes->get('recycle', [AttributeController::class, 'recycle'], ['as' => 'admin.attribute.recycle']);
         $routes->get('get-list-recycle', [AttributeController::class, 'getListRecycle'], ['as' => 'admin.attribute.getListRecycle']);
+    });
+
+    // Product
+    $routes->group('product', static function ($routes) {
+        // Index Page
+        $routes->get('/', [ProductController::class, 'index'], ['as' => 'admin.product.index']);
+        $routes->get('get-list', [ProductController::class, 'getList'], ['as' => 'admin.product.getList']);
+        $routes->post('multi-status', [ProductController::class, 'multiStatus'], ['as' => 'admin.product.multiStatus']);
+        $routes->post('multi-delete', [ProductController::class, 'multiDelete'], ['as' => 'admin.product.multiDelete']);
+
+        // Create Page
+        $routes->get('create', [ProductController::class, 'create'], ['as' => 'admin.product.create']);
+        $routes->post('store', [ProductController::class, 'store'], ['as' => 'admin.product.store']);
+        $routes->post('product-exist', [ProductController::class, 'productExistSlug'], ['as' => 'admin.product.productExistSlug']);
+        $routes->post('load-attribute', [ProductController::class, 'attributeLoadList'], ['as' => 'admin.product.attributeLoadList']);
+
+        // Edit Page
+        $routes->get('(:num)/edit', [ProductController::class, 'edit'], ['as' => 'admin.product.edit']);
+        $routes->post('(:num)/update', [ProductController::class, 'update'], ['as' => 'admin.product.update']);
+
+        // Recycle Page
+        $routes->get('recycle', [ProductController::class, 'recycle'], ['as' => 'admin.product.recycle']);
+        $routes->get('get-list-recycle', [ProductController::class, 'getListRecycle'], ['as' => 'admin.product.getListRecycle']);
     });
 
     // Users

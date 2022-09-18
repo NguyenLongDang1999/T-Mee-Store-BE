@@ -24,6 +24,15 @@ function statusOption(): array
     ];
 }
 
+function typeDiscountOption(): array
+{
+    return [
+        '' => 'Loại giảm giá',
+        TYPE_DISCOUNT_VND => 'Theo số tiền (VNĐ)',
+        TYPE_DISCOUNT_PERCENT => 'Theo phần trăm (%)'
+    ];
+}
+
 function uppercaseFirstCharacter($string): string
 {
     return ucwords(strtolower($string));

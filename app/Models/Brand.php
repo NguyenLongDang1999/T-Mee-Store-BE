@@ -67,6 +67,11 @@ class Brand extends Model
             ->first();
     }
 
+    public function getBrandList(): array
+    {
+        return $this->select('id, name')->where('status', STATUS_ACTIVE)->findAll();
+    }
+
     /**
      * @param $input
      * @param Brand $model

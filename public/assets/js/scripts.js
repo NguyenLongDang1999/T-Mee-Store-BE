@@ -9,11 +9,14 @@ $(function () {
 
     // Variables
     const bootstrapSelect = $('.bootstrap-select'),
+        priceFormat = $('.price-format'),
+        imageUploader = $('.image-uploader'),
         flatpickrDate = $('.flatpickr-date'),
         imageFileInput = $('.image-file-input'),
         imageFileReset = $('.image-file-reset'),
         name = $('#name'),
-        slug = $('#slug')
+        slug = $('#slug'),
+        quillJS = $('#quill-editor')
 
     let uploadedImage = $('#uploaded-image')
 
@@ -24,10 +27,98 @@ $(function () {
 
     if (flatpickrDate.length) {
         flatpickrDate.flatpickr({
-            maxDate: 'today',
             dateFormat: 'Y-m-d',
             altInput: true,
             altFormat: 'd-m-Y',
+        });
+    }
+
+    if (imageUploader.length) {
+        imageUploader.imageUploader({
+            maxSize: 2 * 1024 * 1024,
+            maxFiles: 6,
+            mimes: ['image/jpeg', 'image/png'],
+            label: 'Kéo & Thả hình vào đây hoặc nhấp chuột để chọn'
+        });
+    }
+
+    if (priceFormat.length) {
+        priceFormat.toArray().forEach(function (field) {
+            new Cleave(field, {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand'
+            })
+        });
+    }
+
+    if (quillJS.length) {
+        const quillEditor = '#quill-editor'
+
+        new Quill(quillEditor, {
+            bounds: quillEditor,
+            placeholder: 'Nhập vào đây...',
+            modules: {
+                toolbar: [
+                    [
+                        {
+                            font: []
+                        },
+                        {
+                            size: []
+                        }
+                    ],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [
+                        {
+                            color: []
+                        },
+                        {
+                            background: []
+                        }
+                    ],
+                    [
+                        {
+                            script: 'super'
+                        },
+                        {
+                            script: 'sub'
+                        }
+                    ],
+                    [
+                        {
+                            header: '1'
+                        },
+                        {
+                            header: '2'
+                        },
+                        'blockquote',
+                        'code-block'
+                    ],
+                    [
+                        {
+                            list: 'ordered'
+                        },
+                        {
+                            list: 'bullet'
+                        },
+                        {
+                            indent: '-1'
+                        },
+                        {
+                            indent: '+1'
+                        }
+                    ],
+                    [
+                        'direction',
+                        {
+                            align: []
+                        }
+                    ],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            },
+            theme: 'snow'
         });
     }
 
@@ -63,6 +154,11 @@ $(function () {
         const is_checked = isChecked()
         const purge = $(this).data("purge")
         return is_checked ? deleteAllItem($("#frmTbList").serialize(), purge) : notifyCancel()
+    })
+
+    $(document).on("change", "#category_id", function () {
+        const categoryID = $(this).val()
+        return attributeLoadList(categoryID)
     })
 
     // Functions
@@ -172,6 +268,20 @@ $(function () {
                     return resp.result ? notifySuccess(resp.message) : notifyCancel(resp.message, 'error', 'Thất Bại!')
                 })
             }
+        })
+    }
+
+    function attributeLoadList(data) {
+        const attributeList = $.ajax({
+            type: "post",
+            url: url_load_attribute,
+            data: {
+                data: data
+            }
+        })
+        attributeList.done(function (resp) {
+            $('#attribute_id').html(resp)
+            $('#attribute_id').selectpicker('refresh');
         })
     }
 })

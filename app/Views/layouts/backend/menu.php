@@ -141,7 +141,7 @@
         <!-- -- Attribute Manager -->
         <li class="menu-item <?= getMenuActive(route_to('admin.attribute.index'), '*') ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-store"></i>
+                <i class="menu-icon tf-icons bx bx-cube"></i>
                 <div class="text-capitalize">Thuộc tính sản phẩm</div>
             </a>
 
@@ -160,6 +160,34 @@
 
                 <li class="menu-item <?= getMenuActive(route_to('admin.attribute.recycle')) ?>">
                     <a href="<?= route_to('admin.attribute.recycle') ?>" class="menu-link">
+                        <div class="text-capitalize">Thùng rác</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- -- Product Manager -->
+        <li class="menu-item <?= getMenuActive(route_to('admin.product.index'), '*') ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bxl-product-hunt"></i>
+                <div class="text-capitalize">Sản phẩm</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item <?= getMenuActive(route_to('admin.product.index')) ?>">
+                    <a href="<?= route_to('admin.product.index') ?>" class="menu-link">
+                        <div class="text-capitalize">Danh sách</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.product.create')) ?>">
+                    <a href="<?= route_to('admin.product.create') ?>" class="menu-link">
+                        <div class="text-capitalize">Thêm mới</div>
+                    </a>
+                </li>
+
+                <li class="menu-item <?= getMenuActive(route_to('admin.product.recycle')) ?>">
+                    <a href="<?= route_to('admin.product.recycle') ?>" class="menu-link">
                         <div class="text-capitalize">Thùng rác</div>
                     </a>
                 </li>
