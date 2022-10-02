@@ -18,6 +18,7 @@ Product <?= isset($row) ? 'Update' : 'Create' ?> Page
 <?= script_tag('assets/vendor/libs/cleavejs/cleave.js') ?>
 <?= script_tag('assets/vendor/libs/flatpickr/flatpickr.js') ?>
 <?= script_tag('assets/vendor/libs/uploader/image.uploader.js') ?>
+<?= script_tag('assets/vendor/libs/jquery-repeater/jquery-repeater.js') ?>
 <?= script_tag('assets/vendor/libs/bootstrap-select/bootstrap-select.js') ?>
 <?= script_tag('assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js') ?>
 <?= script_tag('assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js') ?>
@@ -197,7 +198,7 @@ Product <?= isset($row) ? 'Update' : 'Create' ?> Page
     </div>
 
     <div class="col-12">
-        <?= form_open_multipart($routePost ?? '', ['id' => 'product-form', 'dropzone needsclick']) ?>
+        <?= form_open_multipart($routePost ?? '', ['id' => 'product-form', 'class' => 'form-repeater']) ?>
         <?= form_hidden('imageRoot', $row->image ?? '') ?>
         <?= form_hidden('id', $row->id ?? '') ?>
 
@@ -289,7 +290,7 @@ Product <?= isset($row) ? 'Update' : 'Create' ?> Page
                             $getCategoryList ?? [],
                             $row->category_id ?? '',
                             [
-                                'class' => 'bootstrap-select text-capitalize w-100',
+                                'class' => 'bootstrap-select text-capitalize w-100 load-attribute',
                                 'data-style' => 'btn-default text-capitalize',
                                 'data-size' => 8,
                                 'id' => 'category_id'
@@ -356,19 +357,52 @@ Product <?= isset($row) ? 'Update' : 'Create' ?> Page
             <h5 class="card-header text-capitalize">Thuộc tính sản phẩm</h5>
 
             <div class="card-body">
-                <div class="col-md-6">
-                    <?= form_label('Thuộc tính', 'attribute_id', ['class' => 'form-label']) ?>
-                    <?= form_dropdown(
-                        'attribute_id',
-                        [],
-                        $row->attribute_id ?? '',
-                        [
-                            'class' => 'bootstrap-select text-capitalize w-100',
-                            'data-style' => 'btn-default text-capitalize',
-                            'data-size' => 8,
-                            'id' => 'attribute_id'
-                        ])
-                    ?>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <?= form_label('Thuộc tính', 'attribute_id', ['class' => 'form-label']) ?>
+                        <?= form_dropdown(
+                            'attribute_id',
+                            ['' => '[-- Chọn Thuộc Tính --]'],
+                            $row->attribute_id ?? '',
+                            [
+                                'class' => 'bootstrap-select text-capitalize w-px-250',
+                                'data-style' => 'btn-default text-capitalize',
+                                'data-size' => 8,
+                                'id' => 'attribute_id'
+                            ])
+                        ?>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row g-3" id="add-attribute-value">
+                            <div class="col-md-5 col-4">
+                                <?= form_label('Tên thuộc tính', 'attribute_id_name', ['class' => 'form-label']) ?>
+                                <?= form_input(
+                                    'attribute_id_name',
+                                    '',
+                                    ['class' => 'form-control',
+                                        'disabled' => 'disabled',
+                                        'id' => 'attribute_id_name'])
+                                ?>
+                            </div>
+
+                            <div class="col-md-5 col-6">
+                                <?= form_label('Giá trị thuộc tính', 'attribute_values', ['class' => 'form-label']) ?>
+                                <?= form_input(
+                                    'attribute_values',
+                                    '',
+                                    ['class' => 'form-control',
+                                        'id' => 'attribute_values'])
+                                ?>
+                            </div>
+
+                            <div class="col-md-2 col-2">
+                                <button type="button" class="btn btn-icon btn-primary">
+                                    <span class="tf-icons bx bx-pie-chart-alt"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -378,6 +412,54 @@ Product <?= isset($row) ? 'Update' : 'Create' ?> Page
 
             <div class="card-body">
                 <div id="quill-editor"></div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <h5 class="card-header text-capitalize">Thông số kỹ thuật</h5>
+
+            <div class="card-body">
+                <div data-repeater-list="group-a">
+                    <div data-repeater-item>
+                        <div class="row">
+                            <div class="mb-3 col-lg-6 col-xl-5 col-12 mb-0">
+                                <?= form_label('Tiêu đề thông số', 'form-repeater-1-1', ['class' => 'form-label']) ?>
+                                <?= form_input(
+                                    'form-repeater-1-1',
+                                    '',
+                                    ['class' => 'form-control',
+                                        'id' => 'form-repeater-1-1'])
+                                ?>
+                            </div>
+
+                            <div class="mb-3 col-lg-6 col-xl-5 col-12 mb-0">
+                                <?= form_label('Mô tả thông số', 'form-repeater-1-1', ['class' => 'form-label']) ?>
+                                <?= form_input(
+                                    'form-repeater-1-1',
+                                    '',
+                                    ['class' => 'form-control',
+                                        'id' => 'form-repeater-1-1'])
+                                ?>
+                            </div>
+
+                            <div class="mb-3 col-lg-12 col-xl-2 col-12 d-flex align-items-center mb-0">
+                                <a href="javascript:void(0)" class="btn btn-label-danger mt-4" data-repeater-delete>
+                                    <i class="bx bx-x"></i>
+                                    <span class="align-middle">Xóa</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <hr/>
+                    </div>
+                </div>
+
+                <div class="mb-0">
+                    <a href="javascript:void(0)" class="btn btn-primary" data-repeater-create>
+                        <i class="bx bx-plus"></i>
+                        <span class="align-middle">Thêm</span>
+                    </a>
+                </div>
             </div>
         </div>
 

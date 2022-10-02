@@ -84,6 +84,7 @@ class AttributeController extends BaseController
     public function update($id): RedirectResponse
     {
         $input = $this->request->getPost();
+        dd($input);
 
         if ($this->attribute->update($id, $input)) {
             return redirectMessage('admin.attribute.index', 'success', "Thuộc tính <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");

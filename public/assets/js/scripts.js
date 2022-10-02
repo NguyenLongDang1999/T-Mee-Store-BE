@@ -16,7 +16,8 @@ $(function () {
         imageFileReset = $('.image-file-reset'),
         name = $('#name'),
         slug = $('#slug'),
-        quillJS = $('#quill-editor')
+        quillJS = $('#quill-editor'),
+        formRepeater = $('.form-repeater')
 
     let uploadedImage = $('#uploaded-image')
 
@@ -49,6 +50,36 @@ $(function () {
                 numeralThousandsGroupStyle: 'thousand'
             })
         });
+    }
+
+    if (formRepeater.length) {
+        let row = 2;
+        let col = 1;
+
+        formRepeater.on('submit', function (e) {
+            e.preventDefault();
+        });
+
+        formRepeater.repeater({
+            show: function () {
+                const fromControl = $(this).find('.form-control, .form-select');
+                const formLabel = $(this).find('.form-label');
+
+                fromControl.each(function (i) {
+                    const id = 'form-repeater-' + row + '-' + col;
+                    $(fromControl[i]).attr('id', id);
+                    $(formLabel[i]).attr('for', id);
+                    col++;
+                });
+
+                row++;
+
+                $(this).slideDown();
+            },
+            hide: function (e) {
+                $(this).slideUp(e);
+            }
+        })
     }
 
     if (quillJS.length) {
@@ -156,9 +187,13 @@ $(function () {
         return is_checked ? deleteAllItem($("#frmTbList").serialize(), purge) : notifyCancel()
     })
 
-    $(document).on("change", "#category_id", function () {
+    $(document).on("change", "select[class$=load-attribute]", function () {
         const categoryID = $(this).val()
         return attributeLoadList(categoryID)
+    })
+
+    $(document).on('change', 'select[name=attribute_id]', function () {
+        console.log($(this).find('option:selected').text())
     })
 
     // Functions
