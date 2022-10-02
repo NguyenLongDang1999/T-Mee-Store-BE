@@ -4,7 +4,6 @@ namespace App\Controllers\Backend;
 
 use App\Controllers\BaseController;
 use App\Models\Brand;
-use App\Models\Images;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -13,12 +12,10 @@ use ReflectionException;
 class BrandController extends BaseController
 {
     protected Brand $brand;
-    protected Images $images;
 
     public function __construct()
     {
         $this->brand = new Brand();
-        $this->images = new Images();
     }
 
     public function index(): string
@@ -32,6 +29,39 @@ class BrandController extends BaseController
         $results = $this->brand->getList($input);
 
         return $this->getListBrand($results);
+    }
+
+    /**
+     * @param array $results
+     * @return ResponseInterface
+     */
+    private function getListBrand(array $results): ResponseInterface
+    {
+        $data = array();
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $results['total'];
+        $data['aaData'] = array();
+
+        if (count($results['model']) > 0) {
+            foreach ($results['model'] as $item) {
+                $data['aaData'][] = [
+                    'checkbox' => '',
+                    'responsive_id' => esc($item->id),
+                    'image' => img($item->image ?? PATH_IMAGE_DEFAULT, false, [
+                        'alt' => esc($item->name),
+                        'title' => esc($item->name),
+                        'width' => 100,
+                        'height' => 100
+                    ]),
+                    'name' => esc($item->name),
+                    'status' => esc($item->status),
+                    'created_at' => esc($item->created_at->format(FORMAT_DATE)),
+                    'updated_at' => esc($item->updated_at->format(FORMAT_DATE)),
+                    'edit_pages' => route_to('admin.brand.edit', esc($item->id))
+                ];
+            }
+        }
+
+        return $this->response->setJSON($data);
     }
 
     public function recycle(): string
@@ -67,7 +97,6 @@ class BrandController extends BaseController
 
         $file = $this->request->getFile('image');
         $getID = $this->brand->getInsertID();
-        $imageURL = PATH_IMAGE_DEFAULT;
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
@@ -75,10 +104,8 @@ class BrandController extends BaseController
             }
         }
 
-        if (!$this->images->insert([
-            'url' => $imageURL,
-            'relation_id' => $getID,
-            'image_type' => MODULE_BRAND
+        if (!$this->brand->update($getID, [
+            'image_uri' => $imageURL ?? NULL
         ])) {
             return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
         }
@@ -86,11 +113,26 @@ class BrandController extends BaseController
         return redirectMessage('admin.brand.index', 'success', "Thương hiệu <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
     }
 
-    public function edit($id): string
+    private function serviceUploadImage($id, UploadedFile $file): string
     {
-        $data['row'] = $this->brand->getBrandByID($id);
-        $data['routePost'] = route_to('admin.brand.update', $id);
-        return view('backend/brand/create_edit', $data);
+        $path = PATH_BRAND_IMAGE . $id . '/';
+
+        $fileName = $file->getRandomName();
+        $file->move($path, $fileName);
+
+        $savePath = $path . convertImageWebp($fileName);
+        $data = [
+            'path' => $path,
+            'fileName' => $fileName,
+            'savePath' => $savePath,
+            'resize' => [
+                'resizeX' => '200',
+                'resizeY' => '200',
+            ]
+        ];
+
+        imageManipulation($data);
+        return $savePath;
     }
 
     /**
@@ -99,29 +141,27 @@ class BrandController extends BaseController
     public function update($id): RedirectResponse
     {
         $input = $this->request->getPost();
-        $input['id'] = $id;
-
         $file = $this->request->getFile('image');
 
         if ($file) {
             if ($file->isValid() && !$file->hasMoved()) {
-                $this->images->set('url', $this->serviceUploadImage($id, $file));
-                $this->images->where('relation_id', $id);
-                $this->images->where('image_type', MODULE_BRAND);
-
-                if (!$this->images->update()) {
-                    return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
-                }
-
+                $input['image_uri'] = $this->serviceUploadImage($id, $file);
                 deleteImage($input['imageRoot']);
             }
         }
 
-        if ($this->brand->update($id, $input)) {
-            return redirectMessage('admin.brand.index', 'success', "Thương hiệu <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");
+        if (!$this->brand->update($id, $input)) {
+            return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
         }
 
-        return redirectMessage('admin.brand.index', 'error', MESSAGE_ERROR);
+        return redirectMessage('admin.brand.index', 'success', "Thương hiệu <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");
+    }
+
+    public function edit($id): string
+    {
+        $data['row'] = $this->brand->getBrandByID($id);
+        $data['routePost'] = route_to('admin.brand.update', $id);
+        return view('backend/brand/create_edit', $data);
     }
 
     /**
@@ -154,7 +194,7 @@ class BrandController extends BaseController
 
         if (isset($result['chk']) && is_array($result['chk'])) {
             if ($purge) {
-                $getImagesMultiple = $this->images->getImagesMultiple($result['chk'], MODULE_BRAND);
+                $getImagesMultiple = $this->brand->select('id')->whereIn('id', $result['chk'])->withDeleted()->findAll();
                 deleteMultipleImage(PATH_BRAND_IMAGE, $getImagesMultiple);
             }
 
@@ -169,7 +209,7 @@ class BrandController extends BaseController
         return $this->response->setJSON($data);
     }
 
-    public function brandExistSlug(): ResponseInterface
+    public function validateExistSlug(): ResponseInterface
     {
         $input = $this->request->getPost();
         $result = $this->brand->select('id')
@@ -182,60 +222,5 @@ class BrandController extends BaseController
         return $this->response->setJSON([
             'valid' => var_export($isValid, 1)
         ]);
-    }
-
-    private function serviceUploadImage($id, UploadedFile $file): string
-    {
-        $path = PATH_BRAND_IMAGE . $id . '/';
-
-        $fileName = $file->getRandomName();
-        $file->move($path, $fileName);
-
-        $savePath = $path . convertImageWebp($fileName);
-        $data = [
-            'path' => $path,
-            'fileName' => $fileName,
-            'savePath' => $savePath,
-            'resize' => [
-                'resizeX' => '200',
-                'resizeY' => '200',
-            ]
-        ];
-
-        imageManipulation($data);
-        return $savePath;
-    }
-
-    /**
-     * @param array $results
-     * @return ResponseInterface
-     */
-    private function getListBrand(array $results): ResponseInterface
-    {
-        $data = array();
-        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $results['total'];
-        $data['aaData'] = array();
-
-        if (count($results['model']) > 0) {
-            foreach ($results['model'] as $item) {
-                $data['aaData'][] = [
-                    'checkbox' => '',
-                    'responsive_id' => esc($item->id),
-                    'image' => img($item->image ?? PATH_IMAGE_DEFAULT, false, [
-                        'alt' => esc($item->name),
-                        'title' => esc($item->name),
-                        'width' => 100,
-                        'height' => 100
-                    ]),
-                    'name' => esc($item->name),
-                    'status' => esc($item->status),
-                    'created_at' => esc($item->created_at->format(FORMAT_DATE)),
-                    'updated_at' => esc($item->updated_at->format(FORMAT_DATE)),
-                    'edit_pages' => route_to('admin.brand.edit', esc($item->id))
-                ];
-            }
-        }
-
-        return $this->response->setJSON($data);
     }
 }

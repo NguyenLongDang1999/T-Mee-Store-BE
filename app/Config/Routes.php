@@ -4,8 +4,8 @@ namespace Config;
 
 use App\Controllers\Backend\AttributeController;
 use App\Controllers\Backend\BrandController;
-use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\CategoryController;
+use App\Controllers\Backend\DashboardController;
 use App\Controllers\Backend\ProductController;
 use App\Controllers\Backend\SliderController;
 use App\Controllers\Backend\UsersController;
@@ -63,7 +63,7 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Create Page
         $routes->get('create', [CategoryController::class, 'create'], ['as' => 'admin.category.create']);
         $routes->post('store', [CategoryController::class, 'store'], ['as' => 'admin.category.store']);
-        $routes->post('category-exist', [CategoryController::class, 'categoryExistSlug'], ['as' => 'admin.category.categoryExistSlug']);
+        $routes->post('category-exist', [CategoryController::class, 'validateExistSlug'], ['as' => 'admin.category.validateExistSlug']);
 
         // Edit Page
         $routes->get('(:num)/edit', [CategoryController::class, 'edit'], ['as' => 'admin.category.edit']);
@@ -85,7 +85,7 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Create Page
         $routes->get('create', [BrandController::class, 'create'], ['as' => 'admin.brand.create']);
         $routes->post('store', [BrandController::class, 'store'], ['as' => 'admin.brand.store']);
-        $routes->post('brand-exist', [BrandController::class, 'brandExistSlug'], ['as' => 'admin.brand.brandExistSlug']);
+        $routes->post('brand-exist', [BrandController::class, 'validateExistSlug'], ['as' => 'admin.brand.validateExistSlug']);
 
         // Edit Page
         $routes->get('(:num)/edit', [BrandController::class, 'edit'], ['as' => 'admin.brand.edit']);
@@ -107,7 +107,7 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Create Page
         $routes->get('create', [SliderController::class, 'create'], ['as' => 'admin.slider.create']);
         $routes->post('store', [SliderController::class, 'store'], ['as' => 'admin.slider.store']);
-        $routes->post('slider-exist', [SliderController::class, 'sliderExistSlug'], ['as' => 'admin.slider.sliderExistSlug']);
+        $routes->post('slider-exist', [SliderController::class, 'validateExistSlug'], ['as' => 'admin.slider.validateExistSlug']);
 
         // Edit Page
         $routes->get('(:num)/edit', [SliderController::class, 'edit'], ['as' => 'admin.slider.edit']);
@@ -150,7 +150,7 @@ $routes->group(PATH_CMS_ADMIN, static function ($routes) {
         // Create Page
         $routes->get('create', [ProductController::class, 'create'], ['as' => 'admin.product.create']);
         $routes->post('store', [ProductController::class, 'store'], ['as' => 'admin.product.store']);
-        $routes->post('product-exist', [ProductController::class, 'productExistSlug'], ['as' => 'admin.product.productExistSlug']);
+        $routes->post('product-exist', [ProductController::class, 'validateExistSlug'], ['as' => 'admin.product.validateExistSlug']);
         $routes->post('load-attribute', [ProductController::class, 'attributeLoadList'], ['as' => 'admin.product.attributeLoadList']);
 
         // Edit Page

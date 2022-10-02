@@ -27,6 +27,11 @@ class CreateSliderTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
+            'image_uri' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true
+            ],
             'status' => [
                 'type' => 'TINYINT',
                 'constraint' => '1',

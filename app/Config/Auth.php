@@ -2,12 +2,12 @@
 
 namespace Config;
 
-use CodeIgniter\Shield\Config\Auth as ShieldAuth;
 use CodeIgniter\Shield\Authentication\Actions\ActionInterface;
 use CodeIgniter\Shield\Authentication\AuthenticatorInterface;
 use CodeIgniter\Shield\Authentication\Authenticators\AccessTokens;
 use CodeIgniter\Shield\Authentication\Authenticators\Session;
 use CodeIgniter\Shield\Authentication\Passwords\ValidatorInterface;
+use CodeIgniter\Shield\Config\Auth as ShieldAuth;
 use CodeIgniter\Shield\Models\UserModel;
 
 class Auth extends ShieldAuth
@@ -360,6 +360,13 @@ class Auth extends ShieldAuth
         return $this->getUrl($url);
     }
 
+    protected function getUrl(string $url): string
+    {
+        return strpos($url, 'http') === 0
+            ? $url
+            : rtrim(site_url($url), '/ ');
+    }
+
     /**
      * Returns the URL that a user should be redirected
      * to after they are logged out.
@@ -380,12 +387,5 @@ class Auth extends ShieldAuth
         $url = setting('Auth.redirects')['register'];
 
         return $this->getUrl($url);
-    }
-
-    protected function getUrl(string $url): string
-    {
-        return strpos($url, 'http') === 0
-            ? $url
-            : rtrim(site_url($url), '/ ');
     }
 }

@@ -26,12 +26,54 @@ class AttributeController extends BaseController
         return view('backend/attribute/index', $data);
     }
 
+    private function getCategoryList(): array
+    {
+        $getCategoryList = $this->category->getCategoryList();
+        $option = [
+            '' => '[-- Chọn danh mục --]'
+        ];
+
+        foreach ($getCategoryList as $item) {
+            $option[$item->id] = esc($item->name);
+        }
+
+        return $option;
+    }
+
     public function getList(): ResponseInterface
     {
         $input = $this->request->getGet();
         $results = $this->attribute->getList($input);
 
         return $this->getListAttribute($results);
+    }
+
+    /**
+     * @param array $results
+     * @return ResponseInterface
+     */
+    private function getListAttribute(array $results): ResponseInterface
+    {
+        $data = array();
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $results['total'];
+        $data['aaData'] = array();
+
+        if (count($results['model']) > 0) {
+            foreach ($results['model'] as $item) {
+                $data['aaData'][] = [
+                    'checkbox' => '',
+                    'responsive_id' => esc($item->id),
+                    'name' => esc($item->name),
+                    'category_name' => esc($item->categoryName),
+                    'status' => esc($item->status),
+                    'created_at' => esc($item->created_at->format(FORMAT_DATE)),
+                    'updated_at' => esc($item->updated_at->format(FORMAT_DATE)),
+                    'edit_pages' => route_to('admin.attribute.edit', esc($item->id))
+                ];
+            }
+        }
+
+        return $this->response->setJSON($data);
     }
 
     public function recycle(): string
@@ -81,21 +123,6 @@ class AttributeController extends BaseController
     /**
      * @throws ReflectionException
      */
-    public function update($id): RedirectResponse
-    {
-        $input = $this->request->getPost();
-        dd($input);
-
-        if ($this->attribute->update($id, $input)) {
-            return redirectMessage('admin.attribute.index', 'success', "Thuộc tính <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");
-        }
-
-        return redirectMessage('admin.attribute.index', 'error', MESSAGE_ERROR);
-    }
-
-    /**
-     * @throws ReflectionException
-     */
     public function multiStatus(): ResponseInterface
     {
         $input = $this->request->getPost('data');
@@ -115,6 +142,21 @@ class AttributeController extends BaseController
         return $this->response->setJSON($data);
     }
 
+    /**
+     * @throws ReflectionException
+     */
+    public function update($id): RedirectResponse
+    {
+        $input = $this->request->getPost();
+        dd($input);
+
+        if ($this->attribute->update($id, $input)) {
+            return redirectMessage('admin.attribute.index', 'success', "Thuộc tính <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được cập nhật.");
+        }
+
+        return redirectMessage('admin.attribute.index', 'error', MESSAGE_ERROR);
+    }
+
     public function multiDelete(): ResponseInterface
     {
         $input = $this->request->getPost('data');
@@ -130,48 +172,6 @@ class AttributeController extends BaseController
         }
 
         $data['result'] = false;
-        return $this->response->setJSON($data);
-    }
-
-    private function getCategoryList(): array
-    {
-        $getCategoryList = $this->category->getCategoryList();
-        $option = [
-            '' => '[-- Chọn danh mục --]'
-        ];
-
-        foreach ($getCategoryList as $item) {
-            $option[$item->id] = esc($item->name);
-        }
-
-        return $option;
-    }
-
-    /**
-     * @param array $results
-     * @return ResponseInterface
-     */
-    private function getListAttribute(array $results): ResponseInterface
-    {
-        $data = array();
-        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $results['total'];
-        $data['aaData'] = array();
-
-        if (count($results['model']) > 0) {
-            foreach ($results['model'] as $item) {
-                $data['aaData'][] = [
-                    'checkbox' => '',
-                    'responsive_id' => esc($item->id),
-                    'name' => esc($item->name),
-                    'category_name' => esc($item->categoryName),
-                    'status' => esc($item->status),
-                    'created_at' => esc($item->created_at->format(FORMAT_DATE)),
-                    'updated_at' => esc($item->updated_at->format(FORMAT_DATE)),
-                    'edit_pages' => route_to('admin.attribute.edit', esc($item->id))
-                ];
-            }
-        }
-
         return $this->response->setJSON($data);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Database\Seeds;
 
+use App\Models\Users;
 use CodeIgniter\Database\Seeder;
 use CodeIgniter\Shield\Entities\User;
-use App\Models\Users;
 
 class UserAdmin extends Seeder
 {

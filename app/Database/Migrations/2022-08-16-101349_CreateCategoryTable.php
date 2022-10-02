@@ -27,6 +27,11 @@ class CreateCategoryTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255'
             ],
+            'image_uri' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true
+            ],
             'parent_id' => [
                 'type' => 'INT',
                 'constraint' => '11',

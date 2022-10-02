@@ -4,10 +4,10 @@ namespace App\Controllers\Backend;
 
 use App\Controllers\BaseController;
 use App\Models\AuthLogin;
+use App\Models\Users as User;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
-use App\Models\Users as User;
 
 class UsersController extends BaseController
 {
@@ -65,19 +65,6 @@ class UsersController extends BaseController
         return $this->response->setJSON($data);
     }
 
-    public function postChangePassword($id): RedirectResponse
-    {
-        $input = $this->request->getPost('new_password');
-        $user = $this->user->findById($id);
-        $user->setPassword($input);
-
-        if ($this->user->save($user)) {
-            return redirectMessage('admin.users.changePassword', 'message', "Đổi mật khẩu thành công.");
-        }
-
-        return redirectMessage('admin.users.changePassword', 'error', MESSAGE_ERROR);
-    }
-
     private function serviceUploadImage($id, UploadedFile $file): string
     {
         $path = PATH_USER_IMAGE . $id . '/';
@@ -98,5 +85,18 @@ class UsersController extends BaseController
 
         imageManipulation($data);
         return $savePath;
+    }
+
+    public function postChangePassword($id): RedirectResponse
+    {
+        $input = $this->request->getPost('new_password');
+        $user = $this->user->findById($id);
+        $user->setPassword($input);
+
+        if ($this->user->save($user)) {
+            return redirectMessage('admin.users.changePassword', 'message', "Đổi mật khẩu thành công.");
+        }
+
+        return redirectMessage('admin.users.changePassword', 'error', MESSAGE_ERROR);
     }
 }

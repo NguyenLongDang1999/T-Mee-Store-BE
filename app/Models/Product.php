@@ -65,29 +65,6 @@ class Product extends Model
         return $this->searchProductList($input, $model);
     }
 
-    public function getListRecycle($input = array()): array
-    {
-        $model = $this->select('product.id, product.name, images.url as image, parent.name as parentName, product.status, product.featured, product.created_at, product.updated_at')
-            ->where('images.image_type', MODULE_PRODUCT)
-            ->join('category as parent', 'parent.id = product.parent_id', 'left')
-            ->join('images', 'images.relation_id = product.id', 'left')
-            ->onlyDeleted();
-
-        return $this->searchProductList($input, $model);
-    }
-
-    public function getProductByID($id)
-    {
-        return $this->select('product.id, product.name, product.slug, product.category_id, product.brand_id, product.description, 
-            product.status, product.featured, product.meta_title, product.meta_keyword, product.meta_description, images.url as image,
-            product.content, product.start_at, product.end_at, product.sku, product.price, product.quantity, product.discount')
-            ->where('images.image_type', MODULE_PRODUCT)
-            ->where('product.id', $id)
-            ->join('images', 'images.relation_id = product.id', 'left')
-            ->withDeleted()
-            ->first();
-    }
-
     /**
      * @param $input
      * @param Category $model
@@ -137,5 +114,28 @@ class Product extends Model
         $result['model'] = $model->findAll($input['iDisplayLength'], $input['iDisplayStart']);
 
         return $result;
+    }
+
+    public function getListRecycle($input = array()): array
+    {
+        $model = $this->select('product.id, product.name, images.url as image, parent.name as parentName, product.status, product.featured, product.created_at, product.updated_at')
+            ->where('images.image_type', MODULE_PRODUCT)
+            ->join('category as parent', 'parent.id = product.parent_id', 'left')
+            ->join('images', 'images.relation_id = product.id', 'left')
+            ->onlyDeleted();
+
+        return $this->searchProductList($input, $model);
+    }
+
+    public function getProductByID($id)
+    {
+        return $this->select('product.id, product.name, product.slug, product.category_id, product.brand_id, product.description, 
+            product.status, product.featured, product.meta_title, product.meta_keyword, product.meta_description, images.url as image,
+            product.content, product.start_at, product.end_at, product.sku, product.price, product.quantity, product.discount')
+            ->where('images.image_type', MODULE_PRODUCT)
+            ->where('product.id', $id)
+            ->join('images', 'images.relation_id = product.id', 'left')
+            ->withDeleted()
+            ->first();
     }
 }

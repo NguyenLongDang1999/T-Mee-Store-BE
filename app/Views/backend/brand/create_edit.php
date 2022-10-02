@@ -19,7 +19,7 @@ Brand <?= isset($row) ? 'Update' : 'Create' ?> Page
     document.addEventListener('DOMContentLoaded', function () {
         (function () {
             const brandForm = document.getElementById('brand-form'),
-                url_exist_brand = "<?= base_url(route_to('admin.brand.brandExistSlug')) ?>",
+                url_exist_brand = "<?= base_url(route_to('admin.brand.validateExistSlug')) ?>",
                 meteCSRF = document.querySelector('meta[name="X-CSRF-TOKEN"]').getAttribute('content'),
                 nameLabel = document.querySelector('label[for=name]')?.textContent,
                 descriptionLabel = document.querySelector('label[for=description]')?.textContent,

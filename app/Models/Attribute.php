@@ -45,23 +45,6 @@ class Attribute extends Model
         return $this->searchAttributeList($input, $model);
     }
 
-    public function getListRecycle($input = array()): array
-    {
-        $model = $this->select('attribute.id, attribute.name, attribute.status, attribute.created_at, attribute.updated_at, category.name as categoryName')
-            ->join('category', 'category.id = attribute.category_id', 'left')
-            ->onlyDeleted();
-
-        return $this->searchAttributeList($input, $model);
-    }
-
-    public function getAttributeByID($id)
-    {
-        return $this->select('attribute.id, attribute.name, attribute.description, attribute.category_id, attribute.status')
-            ->where('attribute.id', $id)
-            ->withDeleted()
-            ->first();
-    }
-
     /**
      * @param $input
      * @param Attribute $model
@@ -103,5 +86,22 @@ class Attribute extends Model
         $result['model'] = $model->findAll($input['iDisplayLength'], $input['iDisplayStart']);
 
         return $result;
+    }
+
+    public function getListRecycle($input = array()): array
+    {
+        $model = $this->select('attribute.id, attribute.name, attribute.status, attribute.created_at, attribute.updated_at, category.name as categoryName')
+            ->join('category', 'category.id = attribute.category_id', 'left')
+            ->onlyDeleted();
+
+        return $this->searchAttributeList($input, $model);
+    }
+
+    public function getAttributeByID($id)
+    {
+        return $this->select('attribute.id, attribute.name, attribute.description, attribute.category_id, attribute.status')
+            ->where('attribute.id', $id)
+            ->withDeleted()
+            ->first();
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Database\Seeds;
 
-use CodeIgniter\Database\Seeder;
 use App\Models\Category as CategoryModel;
+use CodeIgniter\Database\Seeder;
 use Faker\Factory;
 use ReflectionException;
 

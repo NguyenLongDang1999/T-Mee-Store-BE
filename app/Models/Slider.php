@@ -18,6 +18,7 @@ class Slider extends Model
         'url',
         'sort',
         'description',
+        'image_uri',
         'status',
         'deleted_at'
     ];
@@ -41,31 +42,9 @@ class Slider extends Model
 
     public function getList($input = array()): array
     {
-        $model = $this->select('slider.id, slider.name, slider.sort, slider.status, slider.created_at, slider.updated_at, images.url as image')
-            ->where('images.image_type', MODULE_SLIDER)
-            ->join('images', 'images.relation_id = slider.id', 'left');
+        $model = $this->select('slider.id, slider.name, slider.sort, slider.status, slider.created_at, slider.updated_at, slider.image_uri as image');
 
         return $this->searchSliderList($input, $model);
-    }
-
-    public function getListRecycle($input = array()): array
-    {
-        $model = $this->select('slider.id, slider.name, slider.sort, slider.status, slider.created_at, slider.updated_at, images.url as image')
-            ->where('images.image_type', MODULE_SLIDER)
-            ->join('images', 'images.relation_id = slider.id', 'left')
-            ->onlyDeleted();
-
-        return $this->searchSliderList($input, $model);
-    }
-
-    public function getSliderByID($id)
-    {
-        return $this->select('slider.id, slider.name, slider.url, slider.sort, slider.description, slider.status, images.url as image')
-            ->where('images.image_type', MODULE_SLIDER)
-            ->where('slider.id', $id)
-            ->join('images', 'images.relation_id = slider.id', 'left')
-            ->withDeleted()
-            ->first();
     }
 
     /**
@@ -106,5 +85,20 @@ class Slider extends Model
         $result['model'] = $model->findAll($input['iDisplayLength'], $input['iDisplayStart']);
 
         return $result;
+    }
+
+    public function getListRecycle($input = array()): array
+    {
+        $model = $this->select('slider.id, slider.name, slider.sort, slider.status, slider.created_at, slider.updated_at, slider.image_uri as image')->onlyDeleted();
+
+        return $this->searchSliderList($input, $model);
+    }
+
+    public function getSliderByID($id)
+    {
+        return $this->select('slider.id, slider.name, slider.url, slider.sort, slider.description, slider.status, slider.image_uri as image')
+            ->where('slider.id', $id)
+            ->withDeleted()
+            ->first();
     }
 }

@@ -6,8 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Product;
 use App\Models\Images;
+use App\Models\Product;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -37,12 +37,73 @@ class ProductController extends BaseController
         return view('backend/product/index', $data);
     }
 
+    private function getCategoryList(): array
+    {
+        $getCategoryList = $this->category->getCategoryList();
+        $option = [
+            '' => '[-- Chọn Danh Mục --]'
+        ];
+
+        foreach ($getCategoryList as $item) {
+            $option[$item->id] = esc($item->name);
+        }
+
+        return $option;
+    }
+
+    private function getBrandList(): array
+    {
+        $getBrandList = $this->brand->getBrandList();
+        $option = [
+            '' => '[-- Chọn Thương Hiệu --]'
+        ];
+
+        foreach ($getBrandList as $item) {
+            $option[$item->id] = esc($item->name);
+        }
+
+        return $option;
+    }
+
     public function getList(): ResponseInterface
     {
         $input = $this->request->getGet();
         $results = $this->product->getList($input);
 
         return $this->getListProduct($results);
+    }
+
+    /**
+     * @param array $results
+     * @return ResponseInterface
+     */
+    private function getListProduct(array $results): ResponseInterface
+    {
+        $data = array();
+        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $results['total'];
+        $data['aaData'] = array();
+
+        if (count($results['model']) > 0) {
+            foreach ($results['model'] as $item) {
+                $data['aaData'][] = [
+                    'checkbox' => '',
+                    'responsive_id' => esc($item->id),
+                    'image' => img($item->image ?? PATH_IMAGE_DEFAULT, false, [
+                        'alt' => esc($item->name),
+                        'title' => esc($item->name),
+                        'width' => 100,
+                        'height' => 100
+                    ]),
+                    'name' => esc($item->name),
+                    'status' => esc($item->status),
+                    'created_at' => esc($item->created_at->format(FORMAT_DATE)),
+                    'updated_at' => esc($item->updated_at->format(FORMAT_DATE)),
+                    'edit_pages' => route_to('admin.product.edit', esc($item->id))
+                ];
+            }
+        }
+
+        return $this->response->setJSON($data);
     }
 
     public function recycle(): string
@@ -101,6 +162,28 @@ class ProductController extends BaseController
         return redirectMessage('admin.product.index', 'success', "Sản phẩm <strong class='text-capitalize'>" . esc($input['name']) . "</strong> đã được thêm.");
     }
 
+    private function serviceUploadImage($id, UploadedFile $file): string
+    {
+        $path = PATH_PRODUCT_IMAGE . $id . '/';
+
+        $fileName = $file->getRandomName();
+        $file->move($path, $fileName);
+
+        $savePath = $path . convertImageWebp($fileName);
+        $data = [
+            'path' => $path,
+            'fileName' => $fileName,
+            'savePath' => $savePath,
+            'resize' => [
+                'resizeX' => '200',
+                'resizeY' => '200',
+            ]
+        ];
+
+        imageManipulation($data);
+        return $savePath;
+    }
+
     public function edit($id): string
     {
         $data['row'] = $this->product->getProductByID($id);
@@ -108,6 +191,28 @@ class ProductController extends BaseController
         $data['getCategoryList'] = $this->getCategoryList();
         $data['getBrandList'] = $this->getBrandList();
         return view('backend/product/create_edit', $data);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function multiStatus(): ResponseInterface
+    {
+        $input = $this->request->getPost('data');
+        $status = $this->request->getPost('status');
+        $type = $this->request->getPost('type');
+        parse_str($input, $result);
+
+        if (isset($result['chk']) && is_array($result['chk'])) {
+            if ($this->product->update($result['chk'], [$type => $status === 'NULL' ? NULL : $status])) {
+                $data['result'] = true;
+                $data['message'] = '<span class="text-capitalize">Cập nhật thành công tất cả dữ liệu được chọn.</span>';
+                return $this->response->setJSON($data);
+            }
+        }
+
+        $data['result'] = false;
+        return $this->response->setJSON($data);
     }
 
     /**
@@ -139,28 +244,6 @@ class ProductController extends BaseController
         }
 
         return redirectMessage('admin.product.index', 'error', MESSAGE_ERROR);
-    }
-
-    /**
-     * @throws ReflectionException
-     */
-    public function multiStatus(): ResponseInterface
-    {
-        $input = $this->request->getPost('data');
-        $status = $this->request->getPost('status');
-        $type = $this->request->getPost('type');
-        parse_str($input, $result);
-
-        if (isset($result['chk']) && is_array($result['chk'])) {
-            if ($this->product->update($result['chk'], [$type => $status === 'NULL' ? NULL : $status])) {
-                $data['result'] = true;
-                $data['message'] = '<span class="text-capitalize">Cập nhật thành công tất cả dữ liệu được chọn.</span>';
-                return $this->response->setJSON($data);
-            }
-        }
-
-        $data['result'] = false;
-        return $this->response->setJSON($data);
     }
 
     public function multiDelete(): ResponseInterface
@@ -225,88 +308,5 @@ class ProductController extends BaseController
                 'data-size' => 8,
                 'id' => 'attribute_id'
             ]);
-    }
-
-    private function serviceUploadImage($id, UploadedFile $file): string
-    {
-        $path = PATH_PRODUCT_IMAGE . $id . '/';
-
-        $fileName = $file->getRandomName();
-        $file->move($path, $fileName);
-
-        $savePath = $path . convertImageWebp($fileName);
-        $data = [
-            'path' => $path,
-            'fileName' => $fileName,
-            'savePath' => $savePath,
-            'resize' => [
-                'resizeX' => '200',
-                'resizeY' => '200',
-            ]
-        ];
-
-        imageManipulation($data);
-        return $savePath;
-    }
-
-    private function getCategoryList(): array
-    {
-        $getCategoryList = $this->category->getCategoryList();
-        $option = [
-            '' => '[-- Chọn Danh Mục --]'
-        ];
-
-        foreach ($getCategoryList as $item) {
-            $option[$item->id] = esc($item->name);
-        }
-
-        return $option;
-    }
-
-    private function getBrandList(): array
-    {
-        $getBrandList = $this->brand->getBrandList();
-        $option = [
-            '' => '[-- Chọn Thương Hiệu --]'
-        ];
-
-        foreach ($getBrandList as $item) {
-            $option[$item->id] = esc($item->name);
-        }
-
-        return $option;
-    }
-
-    /**
-     * @param array $results
-     * @return ResponseInterface
-     */
-    private function getListProduct(array $results): ResponseInterface
-    {
-        $data = array();
-        $data['iTotalRecords'] = $data['iTotalDisplayRecords'] = $results['total'];
-        $data['aaData'] = array();
-
-        if (count($results['model']) > 0) {
-            foreach ($results['model'] as $item) {
-                $data['aaData'][] = [
-                    'checkbox' => '',
-                    'responsive_id' => esc($item->id),
-                    'image' => img($item->image ?? PATH_IMAGE_DEFAULT, false, [
-                        'alt' => esc($item->name),
-                        'title' => esc($item->name),
-                        'width' => 100,
-                        'height' => 100
-                    ]),
-                    'name' => esc($item->name),
-                    'status' => esc($item->status),
-                    'created_at' => esc($item->created_at->format(FORMAT_DATE)),
-                    'updated_at' => esc($item->updated_at->format(FORMAT_DATE)),
-                    'edit_pages' => route_to('admin.product.edit', esc($item->id))
-                ];
-            }
-        }
-
-        return $this->response->setJSON($data);
     }
 }

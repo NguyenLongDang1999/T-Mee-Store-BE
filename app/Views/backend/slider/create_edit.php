@@ -19,7 +19,7 @@ Slider <?= isset($row) ? 'Update' : 'Create' ?> Page
     document.addEventListener('DOMContentLoaded', function () {
         (function () {
             const sliderForm = document.getElementById('slider-form'),
-                url_exist_slider = "<?= base_url(route_to('admin.slider.sliderExistSlug')) ?>",
+                url_exist_slider = "<?= base_url(route_to('admin.slider.validateExistSlug')) ?>",
                 meteCSRF = document.querySelector('meta[name="X-CSRF-TOKEN"]').getAttribute('content'),
                 nameLabel = document.querySelector('label[for=name]')?.textContent,
                 urlLabel = document.querySelector('label[for=url]')?.textContent,

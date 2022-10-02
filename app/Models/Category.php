@@ -17,6 +17,7 @@ class Category extends Model
         'name',
         'slug',
         'parent_id',
+        'image_uri',
         'description',
         'status',
         'featured',
@@ -49,50 +50,10 @@ class Category extends Model
 
     public function getList($input = array()): array
     {
-        $model = $this->select('category.id, category.name, images.url as image, parent.name as parentName, category.status, category.featured, category.created_at, category.updated_at')
-            ->where('images.image_type', MODULE_CATEGORY)
-            ->join('category as parent', 'parent.id = category.parent_id', 'left')
-            ->join('images', 'images.relation_id = category.id', 'left');
+        $model = $this->select('category.id, category.name, category.image_uri as image, parent.name as parentName, category.status, category.featured, category.created_at, category.updated_at')
+            ->join('category as parent', 'parent.id = category.parent_id', 'left');
 
         return $this->searchCategoryList($input, $model);
-    }
-
-    public function getListRecycle($input = array()): array
-    {
-        $model = $this->select('category.id, category.name, images.url as image, parent.name as parentName, category.status, category.featured, category.created_at, category.updated_at')
-            ->where('images.image_type', MODULE_CATEGORY)
-            ->join('category as parent', 'parent.id = category.parent_id', 'left')
-            ->join('images', 'images.relation_id = category.id', 'left')
-            ->onlyDeleted();
-
-        return $this->searchCategoryList($input, $model);
-    }
-
-    public function getCategoryList($parent_id = 0): array
-    {
-        return $this->select('id, name')->where('parent_id', $parent_id)->findAll();
-    }
-
-    public function getCategoryByID($id)
-    {
-        return $this->select('category.id, category.name, category.slug, category.parent_id, category.description, category.status, category.featured, 
-            category.meta_title, category.meta_keyword, category.meta_description, images.url as image')
-            ->where('images.image_type', MODULE_CATEGORY)
-            ->where('category.id', $id)
-            ->join('images', 'images.relation_id = category.id', 'left')
-            ->withDeleted()
-            ->first();
-    }
-
-    public function categoryCountParentID($id, $recycle = false)
-    {
-        $model = $this->select('id')->whereIn('parent_id', $id);
-
-        if ($recycle) {
-            $model->withDeleted();
-        }
-
-        return $model->countAllResults();
     }
 
     /**
@@ -140,5 +101,39 @@ class Category extends Model
         $result['model'] = $model->findAll($input['iDisplayLength'], $input['iDisplayStart']);
 
         return $result;
+    }
+
+    public function getListRecycle($input = array()): array
+    {
+        $model = $this->select('category.id, category.name, category.image_uri as image, parent.name as parentName, category.status, category.featured, category.created_at, category.updated_at')
+            ->join('category as parent', 'parent.id = category.parent_id', 'left')
+            ->onlyDeleted();
+
+        return $this->searchCategoryList($input, $model);
+    }
+
+    public function getCategoryList($parent_id = 0): array
+    {
+        return $this->select('id, name')->where('parent_id', $parent_id)->findAll();
+    }
+
+    public function getCategoryByID($id)
+    {
+        return $this->select('category.id, category.name, category.slug, category.parent_id, category.description, category.status, category.featured, 
+            category.meta_title, category.meta_keyword, category.meta_description, category.image_uri as image')
+            ->where('category.id', $id)
+            ->withDeleted()
+            ->first();
+    }
+
+    public function categoryCountParentID($id, $recycle = false)
+    {
+        $model = $this->select('id')->whereIn('parent_id', $id);
+
+        if ($recycle) {
+            $model->withDeleted();
+        }
+
+        return $model->countAllResults();
     }
 }

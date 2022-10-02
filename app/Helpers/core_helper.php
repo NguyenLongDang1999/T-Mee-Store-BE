@@ -1,8 +1,8 @@
 <?php
 
 use CodeIgniter\HTTP\RedirectResponse;
-use Config\Services;
 use CodeIgniter\I18n\Time;
+use Config\Services;
 
 function getMenuActive($patterns, $open = false, $activeClass = "active")
 {
@@ -82,7 +82,7 @@ function redirectMessage($route, $key, $message): RedirectResponse
 
 function deleteImage($path)
 {
-    if (file_exists($path) && $path !== PATH_IMAGE_DEFAULT) {
+    if (file_exists($path)) {
         unlink($path);
     }
 }
@@ -91,8 +91,8 @@ function deleteMultipleImage($path, $array)
 {
     if (count($array) > 0) {
         foreach ($array as $item) {
-            delete_files(FCPATH . $path . $item->relation_id . '/', true);
-            is_dir($path . $item->relation_id) && rmdir($path . $item->relation_id . '/');
+            delete_files(FCPATH . $path . $item->id . '/', true);
+            is_dir($path . $item->id) && rmdir($path . $item->id . '/');
         }
     }
 }

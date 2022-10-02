@@ -35,7 +35,8 @@ class AttributeValues extends Model
     protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
-    public function getAttributeValueList($attribute_id) {
+    public function getAttributeValueList($attribute_id)
+    {
         return $this->select('id, name')->where('attribute_id', $attribute_id)->findAll();
     }
 }
